@@ -1,0 +1,7 @@
+textblob
+spacy
+nltk
+vaderSentiment
+pyngrok
+pandas
+streamlit
