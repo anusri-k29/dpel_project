@@ -5,6 +5,15 @@ import spacy
 from nltk.corpus import wordnet
 import nltk
 
+from spacy.cli import download
+
+# Download the model if it's not available
+try:
+    nlp = spacy.load("en_core_web_sm")
+except OSError:
+    download("en_core_web_sm")
+    nlp = spacy.load("en_core_web_sm")
+
 # Download NLTK WordNet data
 nltk.download('wordnet')
 
