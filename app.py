@@ -91,51 +91,7 @@ if not review_details_df.empty:
     review_details_df['Stay Date'] = pd.to_datetime(review_details_df['Stay Date'], errors='coerce')  # Ensure the date is in datetime format
     review_details_df['Month'] = review_details_df['Stay Date'].dt.month_name()
     review_details_df['Year'] = review_details_df['Stay Date'].dt.year
-# Rating vs Sentiment Heatmap
-if hotel_name_input and not review_details_df.empty:
-    hotel_reviews = review_details_df[review_details_df['hotel_name'].str.contains(hotel_name_input, case=False, na=False)]
-    
-    if not hotel_reviews.empty:
-        # Sentiment columns from summary_review_1.csv
-        sentiment_columns = [
-            'Food Sentiment', 'Service Sentiment', 'Staff Sentiment', 
-            'Cleanliness Sentiment', 'Ambiance Sentiment', 'Value Sentiment', 
-            'Room Sentiment', 'Amenities Sentiment'
-        ]
 
-        # Check if all sentiment columns exist in the hotel_sentiment_df
-        missing_columns = [col for col in sentiment_columns if col not in hotel_sentiment_df.columns]
-        if missing_columns:
-            st.error(f"Missing sentiment columns: {missing_columns}")
-        else:
-            # Mapping sentiments to numerical values
-            sentiment_mapping = {
-                'excellent': 4,
-                'good': 3,
-                'neutral': 2,
-                'bad': 1
-            }
-
-            # Apply sentiment mapping to convert sentiments to numeric values in hotel_sentiment_df
-            for col in sentiment_columns:
-                hotel_sentiment_df[col] = hotel_sentiment_df[col].map(sentiment_mapping)
-
-            # Merge hotel_reviews with sentiment data from hotel_sentiment_df
-            merged_df = pd.merge(hotel_reviews, hotel_sentiment_df[['hotel_name'] + sentiment_columns], on='hotel_name', how='inner')
-
-            # Create a DataFrame with Rating and sentiment columns for correlation
-            rating_sentiment_df = merged_df[['Rating'] + sentiment_columns].dropna()
-
-            # Calculate the correlation matrix
-            correlation_matrix = rating_sentiment_df.corr()
-
-            # Plot the heatmap
-            plt.figure(figsize=(10, 6))
-            sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt='.2f', linewidths=0.5)
-            plt.title(f"Rating vs Sentiment Correlation for {hotel_name_input}")
-            st.pyplot(plt)
-    else:
-        st.write(f"No reviews found for {hotel_name_input}.")
 
 # Top Positive & Negative Reviews
 if hotel_name_input and not review_details_df.empty:
