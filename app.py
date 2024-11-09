@@ -111,9 +111,27 @@ if hotel_name_input and not review_details_df.empty:
         st.pyplot(plt)
     else:
         st.write(f"No reviews found for {hotel_name_input}.")
-sentiment_ratings = hotel_reviews[['Rating', 'Food Sentiment', 'Service Sentiment', 'Staff Sentiment']]
-sentiment_ratings_encoded = sentiment_ratings.apply(pd.Categorical)
-corr = sentiment_ratings_encoded.corr()
+    # Check if the columns exist
+st.write(hotel_reviews.columns)
+# Mapping sentiment labels to numerical values
+sentiment_mapping = {
+    'excellent': 4,
+    'good': 3,
+    'neutral': 2,
+    'bad': 1
+}
+
+# Apply mapping to sentiment columns
+for sentiment_col in ['Food Sentiment', 'Service Sentiment', 'Staff Sentiment']:
+    if sentiment_col in hotel_reviews.columns:
+        hotel_reviews[sentiment_col] = hotel_reviews[sentiment_col].map(sentiment_mapping)
+
+# Now proceed with the heatmap
+sentiment_ratings = hotel_reviews[['Rating', 'Food Sentiment', 'Service Sentiment', 'Staff Sentiment']].dropna()
+corr = sentiment_ratings.corr()
+
+# Plotting the heatmap
 plt.figure(figsize=(8, 6))
 sns.heatmap(corr, annot=True, cmap='coolwarm')
 st.pyplot(plt)
+
