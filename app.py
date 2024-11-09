@@ -78,14 +78,14 @@ if search_button and hotel_name_input:
         # Display category-wise sentiment with color coding
         st.subheader("Detailed Sentiments by Category")
         sentiment_categories = {
-            'Food Sentiment': 'food_score',
-            'Service Sentiment': 'service_score',
-            'Staff Sentiment': 'staff_score',
-            'Cleanliness Sentiment': 'cleanliness_score',
-            'Ambiance Sentiment': 'ambiance_score',
-            'Value Sentiment': 'value_score',
-            'Room Sentiment': 'room_score',
-            'Amenities Sentiment': 'amenities_score'
+            'Food ': 'food_score',
+            'Service ': 'service_score',
+            'Staff ': 'staff_score',
+            'Cleanliness ': 'cleanliness_score',
+            'Ambiance ': 'ambiance_score',
+            'Value ': 'value_score',
+            'Room ': 'room_score',
+            'Amenities ': 'amenities_score'
         }
 
         for category, score_col in sentiment_categories.items():
