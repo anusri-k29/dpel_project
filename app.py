@@ -151,8 +151,14 @@ top_hotels = hotel_sentiment_df.nlargest(5, category_column)
 st.table(top_hotels[['hotel_name', category_column]].rename(columns={category_column: f"{selected_category} Score"}))
 
 st.subheader(f"Top 5 Hotels for {selected_category}")
-plt.figure(figsize=(8, 5))
-sns.barplot(x=top_hotels[category_column], y=top_hotels['hotel_name'], palette="viridis")
-plt.xlabel(f"{selected_category} Score")
-plt.ylabel("Hotel Name")
+plt.figure(figsize=(8, 6))
+sns.barplot(x='hotel_name', y=category_column, data=top_hotels, palette="viridis")
+
+# Increase the number of ticks on the x-axis for better granularity
+plt.xticks(rotation=45, ha="right")
+plt.xlabel("Hotel Name")
+plt.ylabel(f"{selected_category} Score")
+
+# Optional: Customize the y-axis scale for better visibility
+plt.tight_layout()  # To avoid label overlap
 st.pyplot(plt)
