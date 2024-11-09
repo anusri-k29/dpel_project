@@ -85,5 +85,3 @@ if search_button and hotel_name_input:
     else:
         st.write(f"Hotel '{hotel_name_input}' not found in the summary data.")
 
-
-
