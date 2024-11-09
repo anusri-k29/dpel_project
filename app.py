@@ -95,29 +95,6 @@ if search_button and hotel_name_input:
             
             # Display category and sentiment with color
             st.markdown(f"<h3 style='color:{category_color};'>{category}: {category_sentiment.capitalize()}</h3>", unsafe_allow_html=True)
-
-        # Filtering review text from the individual reviews data for the selected hotel
-        selected_hotel_reviews = review_details_df[review_details_df['hotel_name'].str.contains(hotel_name_input_cleaned, case=False)]
-
-        # Display individual review text if available
-        if not selected_hotel_reviews.empty:
-            st.subheader(f"Review Texts for {hotel_name_input}")
-            st.write(selected_hotel_reviews[['Review Text']])
-
-            # Display the overall sentiment for each review with color-coding
-            st.subheader(f"Sentiment for {hotel_name_input} Reviews")
-
-            # Loop through the reviews and display sentiment with color coding
-            for index, row in selected_hotel_reviews.iterrows():
-                sentiment = row['Sentiment']
-                
-                # Apply color based on sentiment
-                sentiment_color = sentiment_colors.get(sentiment.lower(), 'black')
-
-                # Display sentiment in big font with color
-                st.markdown(f"<h3 style='color:{sentiment_color};'>{sentiment}</h3>", unsafe_allow_html=True)
-
-        else:
-            st.write("No review text found for this hotel.")
+            
     else:
         st.write(f"Hotel '{hotel_name_input}' not found in the summary data.")
