@@ -149,3 +149,6 @@ if 'Traveler Type' in review_details_df.columns:
     st.pyplot(fig)
 else:
     st.write("Traveler Type information not available.")
+    st.subheader("Top 5 Hotels by Sentiment Score")
+top_hotels = hotel_sentiment_df.nlargest(5, 'avg_sentiment')
+st.table(top_hotels[['hotel_name', 'avg_sentiment']])
