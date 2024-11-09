@@ -4,17 +4,17 @@ import pandas as pd
 # Load data function with error handling
 @st.cache_data
 def load_data():
-    # Load hotel sentiment summary
     try:
         hotel_sentiment_df = pd.read_csv('summary_review_1.csv')
+        review_details_df = pd.read_csv('indi_reviews.csv')
     except FileNotFoundError:
-        st.error("File 'summary_review_1.csv' not found. Please ensure it is in the app directory.")
-        hotel_sentiment_df = pd.DataFrame()  # Empty DataFrame as a fallback
+        st.error("One or more required files are missing.")
+        return pd.DataFrame(), pd.DataFrame()
 
-    return hotel_sentiment_df
+    return hotel_sentiment_df, review_details_df
 
-# Load data at the start of the app
-hotel_sentiment_df = load_data()
+# Load data
+hotel_sentiment_df, review_details_df = load_data()
 
 # Search for a hotel and display relevant sentiment data
 st.header("Search for Hotel Sentiments by Category")
@@ -85,3 +85,53 @@ if search_button and hotel_name_input:
     else:
         st.write(f"Hotel '{hotel_name_input}' not found in the summary data.")
 
+# Add a 'Month' and 'Year' column to review_details_df
+if not review_details_df.empty:
+    review_details_df['Stay Date'] = pd.to_datetime(review_details_df['Stay Date'], errors='coerce')  # Ensure the date is in datetime format
+    review_details_df['Month'] = review_details_df['Stay Date'].dt.month
+    review_details_df['Year'] = review_details_df['Stay Date'].dt.year
+
+# 1. Monthly Review Volume Analysis
+st.header('Monthly Review Volume Analysis')
+if not review_details_df.empty:
+    reviews_by_month = review_details_df.groupby(['Year', 'Month']).size().reset_index(name='Review Count')
+    fig, ax = plt.subplots()
+    sns.lineplot(x='Month', y='Review Count', hue='Year', data=reviews_by_month, marker='o', ax=ax)
+    ax.set_title("Number of Reviews by Month")
+    ax.set_xlabel("Month")
+    ax.set_ylabel("Number of Reviews")
+    st.pyplot(fig)
+
+# 2. Sentiment by Month
+st.header('Sentiment by Month')
+if not review_details_df.empty:
+    # Convert Sentiment column to numeric scores (assuming positive = 1, neutral = 0, negative = -1)
+    sentiment_map = {'positive': 1, 'neutral': 0, 'negative': -1}
+    review_details_df['Sentiment Score'] = review_details_df['Sentiment'].map(sentiment_map)
+
+    # Group by month and year to calculate average sentiment score
+    sentiment_by_month = review_details_df.groupby(['Year', 'Month'])['Sentiment Score'].mean().reset_index(name='Average Sentiment')
+
+    fig, ax = plt.subplots()
+    sns.lineplot(x='Month', y='Average Sentiment', hue='Year', data=sentiment_by_month, marker='o', ax=ax)
+    ax.set_title("Average Sentiment by Month")
+    ax.set_xlabel("Month")
+    ax.set_ylabel("Average Sentiment")
+    st.pyplot(fig)
+
+# 3. Seasonal Sentiment Trends by Category (e.g., Food, Service, Cleanliness)
+st.header('Seasonal Sentiment Trends by Category')
+if not review_details_df.empty:
+    categories = ['Food Quality Score', 'Service Quality Score', 'Staff Friendliness Score', 
+                  'Cleanliness Score', 'Ambiance Score', 'Value for Money Score', 'Room Comfort Score', 'Amenities Scores']
+    
+    # Prepare data for each category to analyze its trend over months
+    category_trends = pd.melt(review_details_df, id_vars=['Year', 'Month'], value_vars=categories,
+                              var_name='Category', value_name='Score')
+
+    fig, ax = plt.subplots(figsize=(10, 6))
+    sns.lineplot(x='Month', y='Score', hue='Category', data=category_trends, marker='o', ax=ax)
+    ax.set_title("Seasonal Sentiment Trends by Category")
+    ax.set_xlabel("Month")
+    ax.set_ylabel("Score")
+    st.pyplot(fig)
