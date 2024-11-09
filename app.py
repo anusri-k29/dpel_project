@@ -138,3 +138,23 @@ if hotel_name_input and not hotel_reviews.empty:
         st.write(f"**Review Text:** {top_negative_review['Review Text']}")
     else:
         st.write(f"No reviews available for {hotel_name_input}.")
+
+
+
+
+# Top Countries by Average Sentiment Score
+if not hotel_sentiment_df.empty:
+    st.header("Top Countries by Average Sentiment Score")
+
+    # Calculate the average sentiment score per country
+    avg_sentiment_by_country = hotel_sentiment_df.groupby('country')['avg_sentiment'].mean().sort_values(ascending=False)
+
+    # Display as a horizontal bar chart
+    st.subheader("Average Sentiment Score by Country")
+    avg_sentiment_by_country.plot(kind='barh', color="skyblue", figsize=(10, 8))
+    plt.title("Average Sentiment Score Across Countries")
+    plt.xlabel("Average Sentiment Score")
+    plt.ylabel("Country")
+    st.pyplot(plt)
+
+
