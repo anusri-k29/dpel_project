@@ -54,25 +54,36 @@ if not unique_hotels_df.empty:
 if not all_reviews_df.empty:
     st.header("All Reviews")
     st.write(all_reviews_df)
-    # Search for a hotel and display relevant sentiment data and review text
+# Search for a hotel and display relevant sentiment data and review text
 st.header("Search for Hotel Sentiments")
-hotel_name_input = st.text_input("Enter hotel name:", "")
 
-if hotel_name_input:
-    # Filter the summary data for the selected hotel
-    selected_hotel_summary = hotel_sentiment_df[hotel_sentiment_df['hotel_name'].str.contains(hotel_name_input, case=False)]
-    
+# Input field for the hotel name
+hotel_name_input = st.text_input("Enter hotel name:")
+
+# Add a button to trigger the search
+search_button = st.button("Search Hotel Sentiment")
+
+if search_button and hotel_name_input:
+    # Clean up the hotel name input (strip spaces and convert to lowercase for case-insensitive matching)
+    hotel_name_input_cleaned = hotel_name_input.strip().lower()
+
+    # Remove leading/trailing spaces and handle NaN values in the hotel_name column
+    hotel_sentiment_df['hotel_name_cleaned'] = hotel_sentiment_df['hotel_name'].str.strip().str.lower()
+
+    # Filter the summary data for the selected hotel based on cleaned name
+    selected_hotel_summary = hotel_sentiment_df[hotel_sentiment_df['hotel_name_cleaned'].str.contains(hotel_name_input_cleaned)]
+
     # Display sentiment scores and review text if the hotel is found in the summary data
     if not selected_hotel_summary.empty:
         st.subheader(f"Sentiment Scores for {hotel_name_input}")
 
         # Displaying the sentiment scores
-        st.write(selected_hotel_summary[['avg_sentiment', 'food_score', 'service_score', 'staff_score', 
+        st.write(selected_hotel_summary[['hotel_name', 'avg_sentiment', 'food_score', 'service_score', 'staff_score', 
                                          'cleanliness_score', 'ambiance_score', 'value_score', 'room_score', 
                                          'amenities_score']])
 
         # Filtering review text from the individual reviews data for the selected hotel
-        selected_hotel_reviews = review_details_df[review_details_df['hotel_name'].str.contains(hotel_name_input, case=False)]
+        selected_hotel_reviews = review_details_df[review_details_df['hotel_name'].str.contains(hotel_name_input_cleaned, case=False)]
 
         # Display individual review text if available
         if not selected_hotel_reviews.empty:
@@ -81,4 +92,5 @@ if hotel_name_input:
         else:
             st.write("No review text found for this hotel.")
     else:
-        st.write("Hotel not found in summary data.")
+        st.write(f"Hotel '{hotel_name_input}' not found in the summary data.")
+
