@@ -44,7 +44,7 @@ if hotel_name:
 
     if not hotel_reviews.empty:
         st.write(f"Reviews for {hotel_name}:")
-        
+
         # Ensure 'Stay Date' column is in DateTime format
         hotel_reviews['Stay Date'] = pd.to_datetime(hotel_reviews['Stay Date'], errors='coerce')
 
@@ -52,20 +52,9 @@ if hotel_name:
         hotel_reviews['Year'] = hotel_reviews['Stay Date'].dt.year
         hotel_reviews['Month'] = hotel_reviews['Stay Date'].dt.month_name()
 
-        # List of categories to visualize
-        categories = ['Food Quality Score', 'Service Quality Score', 'Staff Friendliness Score', 
-                      'Cleanliness Score', 'Ambiance Score', 'Value for Money Score', 
-                      'Room Comfort Score', 'Amenities Score']
-
-        # Melt the data for monthly trends analysis
-        category_trends = pd.melt(hotel_reviews, id_vars=['Year', 'Month'], value_vars=categories)
-
-        # Group by Year, Month, and Category to get the average score
-        category_trends_avg = category_trends.groupby(['Year', 'Month', 'variable'])['value'].mean().reset_index()
-
-        # Plotting the results as a line plot
+        # Plotting the count of visitors by Month
         plt.figure(figsize=(10, 6))
-        sns.lineplot(data=category_trends_avg, x='Month', y='value', hue='variable', marker='o')
+        sns.countplot(data=hotel_reviews, x='Month', palette='viridis')
 
         # Rotate the x-axis labels for better readability
         plt.xticks(rotation=45)
@@ -73,27 +62,7 @@ if hotel_name:
         # Show the plot
         st.pyplot(plt)
         
-        # Display Overall Sentiment (Positive, Negative, Neutral, Excellent, Good, etc.)
-        overall_sentiment = hotel_reviews['Sentiment'].mode()[0]  # Most frequent sentiment
-        sentiment_color = {
-            'Positive': 'green',
-            'Negative': 'red',
-            'Neutral': 'yellow',
-            'Excellent': 'darkgreen',
-            'Good': 'lightgreen',
-            'Bad': 'red'
-        }
-
-        # Display the sentiment with the appropriate color
-        st.markdown(f"### Overall Sentiment: <span style='color:{sentiment_color.get(overall_sentiment, 'black')};'>{overall_sentiment}</span>", unsafe_allow_html=True)
-
-        # Display detailed sentiments for each category (Food, Staff, etc.)
-        for category in categories:
-            category_sentiment = hotel_reviews[f'{category} Sentiment'].mode()[0]  # Most frequent sentiment for each category
-            st.markdown(f"**{category.replace('_', ' ').title()}:** <span style='color:{sentiment_color.get(category_sentiment, 'black')};'>{category_sentiment}</span>", unsafe_allow_html=True)
-
     else:
         st.write(f"No reviews found for {hotel_name}.")
-
 else:
     st.write("Please enter a hotel name to start the analysis.")
