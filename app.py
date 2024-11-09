@@ -135,3 +135,17 @@ if hotel_name_input and not hotel_reviews.empty:
         st.write(f"**Review Text:** {top_negative_review['Review Text']}")
     else:
         st.write(f"No reviews available for {hotel_name_input}.")
+import numpy as np
+from math import pi
+
+# Part 1: Types of Travelers (Pie Chart)
+st.subheader("Types of Travelers")
+# Check if data includes traveler type column
+if 'Traveler Type' in review_details_df.columns:
+    traveler_counts = review_details_df['Traveler Type'].value_counts()
+    fig, ax = plt.subplots()
+    ax.pie(traveler_counts, labels=traveler_counts.index, autopct='%1.1f%%', startangle=90, colors=sns.color_palette("Set2"))
+    ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+    st.pyplot(fig)
+else:
+    st.write("Traveler Type information not available.")
