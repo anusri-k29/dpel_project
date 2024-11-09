@@ -14,7 +14,16 @@ def load_data():
         return pd.DataFrame(), pd.DataFrame()
 
     return hotel_sentiment_df, review_details_df
+   # Function to extract country from hotel_name 
+def extract_country(hotel_name):
+    matches = re.findall(r'\(([^)]+)\)', hotel_name)
+    return matches[-1] if matches else None
 
+# Load data
+hotel_sentiment_df, review_details_df = load_data()
+
+# Create a new 'country' column in hotel_sentiment_df
+hotel_sentiment_df['country'] = hotel_sentiment_df['hotel_name'].apply(extract_country)
 # Load data
 hotel_sentiment_df, review_details_df = load_data()
 
