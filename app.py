@@ -95,3 +95,12 @@ if not review_details_df.empty:
 
 # Optionally, add any additional visualizations here based on review details if needed.
 
+# Plotting the count of visitors by Month
+plt.figure(figsize=(10, 6))
+sns.countplot(data=hotel_reviews, x='Month', palette='viridis')
+
+# Rotate the x-axis labels for better readability
+plt.xticks(rotation=45)
+
+# Show the plot
+st.pyplot(plt)
