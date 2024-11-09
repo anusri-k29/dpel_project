@@ -135,17 +135,8 @@ if hotel_name_input and not hotel_reviews.empty:
         st.write(f"**Review Text:** {top_negative_review['Review Text']}")
     else:
         st.write(f"No reviews available for {hotel_name_input}.")
-import numpy as np
-from math import pi
 
     st.subheader("Top 5 Hotels by Sentiment Score")
 top_hotels = hotel_sentiment_df.nlargest(5, 'avg_sentiment')
 st.table(top_hotels[['hotel_name', 'avg_sentiment']])
-st.subheader("Ratings Distribution by Traveler Type")
-traveler_ratings = review_details_df.groupby(['Traveler Type', 'Rating']).size().unstack(fill_value=0)
-st.bar_chart(traveler_ratings)
 
-traveler_sentiment = review_details_df.pivot_table(values='Sentiment Score', index='Traveler Type', columns='hotel_name', aggfunc='mean')
-st.subheader("Traveler Type Preferences Across Hotels")
-sns.heatmap(traveler_sentiment, annot=True, cmap='YlGnBu')
-st.pyplot()
