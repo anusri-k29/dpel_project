@@ -5,3 +5,4 @@ vaderSentiment
 pyngrok
 pandas
 streamlit
+matplotlib
