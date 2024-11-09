@@ -92,9 +92,11 @@ if not review_details_df.empty:
     review_details_df['Month'] = review_details_df['Stay Date'].dt.month_name()
     review_details_df['Year'] = review_details_df['Stay Date'].dt.year
 
+# Filter reviews by hotel_name_input
+hotel_reviews = review_details_df[review_details_df['hotel_name'].str.contains(hotel_name_input, case=False, na=False)]
 
 # Top Positive & Negative Reviews
-if hotel_name_input and not review_details_df.empty:
+if hotel_name_input and not hotel_reviews.empty:
     hotel_reviews_sorted_by_sentiment = hotel_reviews.sort_values(by='Sentiment Score', ascending=False)
     
     if not hotel_reviews_sorted_by_sentiment.empty:
