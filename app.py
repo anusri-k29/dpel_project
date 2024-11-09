@@ -136,7 +136,17 @@ if hotel_name_input and not hotel_reviews.empty:
     else:
         st.write(f"No reviews available for {hotel_name_input}.")
 
-    st.subheader("Top 5 Hotels by Sentiment Score")
-top_hotels = hotel_sentiment_df.nlargest(5, 'avg_sentiment')
-st.table(top_hotels[['hotel_name', 'avg_sentiment']])
+# Top 5 Hotels by Selected Category
+st.subheader("Top 5 Hotels by Selected Sentiment Category")
+category_options = {
+    'Overall': 'avg_sentiment', 'Food Quality': 'food_score', 
+    'Service Quality': 'service_score', 'Staff Friendliness': 'staff_score',
+    'Cleanliness': 'cleanliness_score', 'Ambiance': 'ambiance_score',
+    'Value for Money': 'value_score', 'Room Comfort': 'room_score',
+    'Amenities': 'amenities_score'
+}
+selected_category = st.selectbox("Choose Sentiment Category", list(category_options.keys()))
+category_column = category_options[selected_category]
+top_hotels = hotel_sentiment_df.nlargest(5, category_column)
+st.table(top_hotels[['hotel_name', category_column]].rename(columns={category_column: f"{selected_category} Score"}))
 
