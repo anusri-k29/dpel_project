@@ -89,6 +89,27 @@ if search_button and hotel_name_input:
         if not selected_hotel_reviews.empty:
             st.subheader(f"Review Texts for {hotel_name_input}")
             st.write(selected_hotel_reviews[['Review Text']])
+            
+            # Display the overall sentiment for each review with color-coding
+            st.subheader(f"Sentiment for {hotel_name_input} Reviews")
+
+            # Loop through the reviews and display sentiment with color coding
+            for index, row in selected_hotel_reviews.iterrows():
+                sentiment = row['Sentiment']
+                
+                # Apply color based on sentiment
+                if sentiment.lower() == 'positive':
+                    sentiment_color = 'green'
+                elif sentiment.lower() == 'negative':
+                    sentiment_color = 'red'
+                elif sentiment.lower() == 'neutral':
+                    sentiment_color = 'yellow'
+                else:
+                    sentiment_color = 'black'  # Default color for undefined sentiments
+
+                # Display sentiment in big font with color
+                st.markdown(f"<h3 style='color:{sentiment_color};'>{sentiment}</h3>", unsafe_allow_html=True)
+            
         else:
             st.write("No review text found for this hotel.")
     else:
