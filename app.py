@@ -1,4 +1,4 @@
-import streamlit as st 
+import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -90,17 +90,24 @@ if search_button and hotel_name_input:
 # Add a 'Month' and 'Year' column to review_details_df for time-based analysis
 if not review_details_df.empty:
     review_details_df['Stay Date'] = pd.to_datetime(review_details_df['Stay Date'], errors='coerce')  # Ensure the date is in datetime format
-    review_details_df['Month'] = review_details_df['Stay Date'].dt.month
+    review_details_df['Month'] = review_details_df['Stay Date'].dt.month_name()
     review_details_df['Year'] = review_details_df['Stay Date'].dt.year
 
-# Optionally, add any additional visualizations here based on review details if needed.
+# Plotting the count of reviews by Month for the selected hotel
+if hotel_name_input and not review_details_df.empty:
+    hotel_reviews = review_details_df[review_details_df['hotel_name'].str.contains(hotel_name_input, case=False, na=False)]
+    
+    if not hotel_reviews.empty:
+        st.subheader(f"Monthly Review Volume for {hotel_name_input}")
+        
+        # Plotting the count of reviews by Month
+        plt.figure(figsize=(10, 6))
+        sns.countplot(data=hotel_reviews, x='Month', palette='viridis')
 
-# Plotting the count of visitors by Month
-plt.figure(figsize=(10, 6))
-sns.countplot(data=hotel_reviews, x='Month', palette='viridis')
+        # Rotate the x-axis labels for better readability
+        plt.xticks(rotation=45)
 
-# Rotate the x-axis labels for better readability
-plt.xticks(rotation=45)
-
-# Show the plot
-st.pyplot(plt)
+        # Show the plot
+        st.pyplot(plt)
+    else:
+        st.write(f"No reviews found for {hotel_name_input}.")
