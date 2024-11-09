@@ -47,6 +47,11 @@ if search_button and hotel_name_input:
             'bad': 'red'
         }
 
+        # Get and display the overall sentiment
+        overall_sentiment = selected_hotel_summary['Overall Sentiment'].values[0].lower()
+        overall_color = sentiment_colors.get(overall_sentiment, 'black')
+        st.markdown(f"<h2 style='color:{overall_color};'>Overall Sentiment: {overall_sentiment.capitalize()}</h2>", unsafe_allow_html=True)
+
         # Define sentiment categories with column mappings
         sentiment_categories = {
             'Food Sentiment': 'Food Sentiment',
