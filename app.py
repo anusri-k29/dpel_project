@@ -84,3 +84,70 @@ if search_button and hotel_name_input:
 
     else:
         st.write(f"Hotel '{hotel_name_input}' not found in the summary data.")
+
+####delete from this
+
+import pydeck as pdk
+from geopy.geocoders import Nominatim
+from geopy.exc import GeocoderTimedOut
+
+# Load data
+@st.cache_data
+def load_data():
+    try:
+        df = pd.read_csv('summary_review_1.csv')
+    except FileNotFoundError:
+        st.error("File 'summary_review_1.csv' not found. Please ensure it is in the app directory.")
+        df = pd.DataFrame()  # Empty fallback
+    return df
+
+hotel_data = load_data()
+
+# Initialize geolocator
+geolocator = Nominatim(user_agent="hotel_locator")
+
+# Function to get country coordinates
+@st.cache_data
+def get_country_coordinates(country):
+    try:
+        location = geolocator.geocode(country, timeout=10)
+        return location.latitude, location.longitude if location else (None, None)
+    except GeocoderTimedOut:
+        return None, None
+
+# Add coordinates to the DataFrame
+hotel_data['coordinates'] = hotel_data['country'].apply(lambda x: get_country_coordinates(x) if pd.notna(x) else (None, None))
+hotel_data[['latitude', 'longitude']] = pd.DataFrame(hotel_data['coordinates'].tolist(), index=hotel_data.index)
+
+# Filter out rows without coordinates
+hotel_data = hotel_data.dropna(subset=['latitude', 'longitude'])
+
+# Display map if data is available
+if not hotel_data.empty:
+    st.title("Hotel Locations by Country")
+
+    midpoint = (hotel_data['latitude'].mean(), hotel_data['longitude'].mean())
+    st.pydeck_chart(pdk.Deck(
+        map_style="mapbox://styles/mapbox/light-v9",
+        initial_view_state=pdk.ViewState(
+            latitude=midpoint[0],
+            longitude=midpoint[1],
+            zoom=1,
+            pitch=40,
+        ),
+        layers=[
+            pdk.Layer(
+                'ScatterplotLayer',
+                data=hotel_data,
+                get_position='[longitude, latitude]',
+                get_color='[200, 30, 0, 160]',
+                get_radius=200000,
+                pickable=True,
+                auto_highlight=True,
+            ),
+        ],
+        tooltip={"text": "{hotel_name} - {country}"},
+    ))
+else:
+    st.write("Could not retrieve coordinates for any country in your dataset.")
+
