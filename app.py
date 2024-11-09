@@ -121,17 +121,5 @@ sentiment_mapping = {
     'bad': 1
 }
 
-# Apply mapping to sentiment columns
-for sentiment_col in ['Food Sentiment', 'Service Sentiment', 'Staff Sentiment']:
-    if sentiment_col in hotel_reviews.columns:
-        hotel_reviews[sentiment_col] = hotel_reviews[sentiment_col].map(sentiment_mapping)
 
-# Now proceed with the heatmap
-sentiment_ratings = hotel_reviews[['Rating', 'Food Sentiment', 'Service Sentiment', 'Staff Sentiment']].dropna()
-corr = sentiment_ratings.corr()
-
-# Plotting the heatmap
-plt.figure(figsize=(8, 6))
-sns.heatmap(corr, annot=True, cmap='coolwarm')
-st.pyplot(plt)
 
