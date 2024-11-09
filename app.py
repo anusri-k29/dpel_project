@@ -39,7 +39,7 @@ if search_button and hotel_name_input:
 
     # Display overall sentiment and detailed sentiments by category if the hotel is found in the summary data
     if not selected_hotel_summary.empty:
-        st.subheader("Overall Sentiment")
+        
         
         # Color mapping based on sentiment value
         sentiment_colors = {
@@ -98,7 +98,7 @@ if hotel_name_input and not review_details_df.empty:
     hotel_reviews = review_details_df[review_details_df['hotel_name'].str.contains(hotel_name_input, case=False, na=False)]
     
     if not hotel_reviews.empty:
-        st.subheader(f"Monthly Review Volume for {hotel_name_input}")
+        st.subheader(f"Most Popular Time to Visit {hotel_name_input}")
         
         # Plotting the count of reviews by Month
         plt.figure(figsize=(10, 6))
