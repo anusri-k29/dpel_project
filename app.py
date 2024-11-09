@@ -64,19 +64,37 @@ if search_button and hotel_name_input:
         overall_sentiment = selected_hotel_summary['Overall Sentiment'].values[0].lower()  # Getting overall sentiment
 
         # Color-coding based on sentiment value
-        if overall_sentiment == 'excellent':
-            sentiment_color = 'darkgreen'
-        elif overall_sentiment == 'good':
-            sentiment_color = 'lightgreen'
-        elif overall_sentiment == 'neutral':
-            sentiment_color = 'yellow'
-        elif overall_sentiment == 'bad':
-            sentiment_color = 'red'
-        else:
-            sentiment_color = 'black'  # Default color if the sentiment is not recognized
-
+        sentiment_colors = {
+            'excellent': 'darkgreen',
+            'good': 'lightgreen',
+            'neutral': 'yellow',
+            'bad': 'red'
+        }
+        
         # Display the overall sentiment with color
-        st.markdown(f"<h2 style='color:{sentiment_color};'>{overall_sentiment.capitalize()}</h2>", unsafe_allow_html=True)
+        overall_color = sentiment_colors.get(overall_sentiment, 'black')
+        st.markdown(f"<h2 style='color:{overall_color};'>{overall_sentiment.capitalize()}</h2>", unsafe_allow_html=True)
+
+        # Display category-wise sentiment with color coding
+        st.subheader("Detailed Sentiments by Category")
+        sentiment_categories = {
+            'Food Sentiment': 'food_score',
+            'Service Sentiment': 'service_score',
+            'Staff Sentiment': 'staff_score',
+            'Cleanliness Sentiment': 'cleanliness_score',
+            'Ambiance Sentiment': 'ambiance_score',
+            'Value Sentiment': 'value_score',
+            'Room Sentiment': 'room_score',
+            'Amenities Sentiment': 'amenities_score'
+        }
+
+        for category, score_col in sentiment_categories.items():
+            # Get sentiment value and apply color
+            category_sentiment = selected_hotel_summary[category].values[0].lower()
+            category_color = sentiment_colors.get(category_sentiment, 'black')
+            
+            # Display category and sentiment with color
+            st.markdown(f"<h3 style='color:{category_color};'>{category}: {category_sentiment.capitalize()}</h3>", unsafe_allow_html=True)
 
         # Filtering review text from the individual reviews data for the selected hotel
         selected_hotel_reviews = review_details_df[review_details_df['hotel_name'].str.contains(hotel_name_input_cleaned, case=False)]
@@ -94,16 +112,7 @@ if search_button and hotel_name_input:
                 sentiment = row['Sentiment']
                 
                 # Apply color based on sentiment
-                if sentiment.lower() == 'excellent':
-                    sentiment_color = 'darkgreen'
-                elif sentiment.lower() == 'good':
-                    sentiment_color = 'lightgreen'
-                elif sentiment.lower() == 'neutral':
-                    sentiment_color = 'yellow'
-                elif sentiment.lower() == 'bad':
-                    sentiment_color = 'red'
-                else:
-                    sentiment_color = 'black'  # Default color for undefined sentiments
+                sentiment_color = sentiment_colors.get(sentiment.lower(), 'black')
 
                 # Display sentiment in big font with color
                 st.markdown(f"<h3 style='color:{sentiment_color};'>{sentiment}</h3>", unsafe_allow_html=True)
