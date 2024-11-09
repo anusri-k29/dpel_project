@@ -40,7 +40,6 @@ if search_button and hotel_name_input:
     # Display overall sentiment and detailed sentiments by category if the hotel is found in the summary data
     if not selected_hotel_summary.empty:
         
-        
         # Color mapping based on sentiment value
         sentiment_colors = {
             'excellent': 'darkgreen',
@@ -93,33 +92,59 @@ if not review_details_df.empty:
     review_details_df['Month'] = review_details_df['Stay Date'].dt.month_name()
     review_details_df['Year'] = review_details_df['Stay Date'].dt.year
 
-# Plotting the count of reviews by Month for the selected hotel
+# Rating vs Sentiment Heatmap
 if hotel_name_input and not review_details_df.empty:
     hotel_reviews = review_details_df[review_details_df['hotel_name'].str.contains(hotel_name_input, case=False, na=False)]
     
     if not hotel_reviews.empty:
-        st.subheader(f"Most Popular Time to Visit {hotel_name_input}")
+        # Sentiment columns to analyze
+        sentiment_columns = [
+            'Food Sentiment', 'Service Sentiment', 'Staff Sentiment', 
+            'Cleanliness Sentiment', 'Ambiance Sentiment', 'Value Sentiment', 
+            'Room Sentiment', 'Amenities Sentiment'
+        ]
         
-        # Plotting the count of reviews by Month
+        # Mapping sentiments to numerical values
+        sentiment_mapping = {
+            'excellent': 4,
+            'good': 3,
+            'neutral': 2,
+            'bad': 1
+        }
+
+        # Apply sentiment mapping to convert sentiments to numeric values
+        for col in sentiment_columns:
+            hotel_reviews[col] = hotel_reviews[col].map(sentiment_mapping)
+
+        # Create a DataFrame with Rating and sentiment columns for correlation
+        rating_sentiment_df = hotel_reviews[['Rating'] + sentiment_columns].dropna()
+
+        # Calculate the correlation matrix
+        correlation_matrix = rating_sentiment_df.corr()
+
+        # Plot the heatmap
         plt.figure(figsize=(10, 6))
-        sns.countplot(data=hotel_reviews, x='Month', palette='viridis')
-
-        # Rotate the x-axis labels for better readability
-        plt.xticks(rotation=45)
-
-        # Show the plot
+        sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt='.2f', linewidths=0.5)
+        plt.title(f"Rating vs Sentiment Correlation for {hotel_name_input}")
         st.pyplot(plt)
     else:
         st.write(f"No reviews found for {hotel_name_input}.")
-    # Check if the columns exist
-st.write(hotel_reviews.columns)
-# Mapping sentiment labels to numerical values
-sentiment_mapping = {
-    'excellent': 4,
-    'good': 3,
-    'neutral': 2,
-    'bad': 1
-}
 
-
-
+# Top Positive & Negative Reviews
+if hotel_name_input and not review_details_df.empty:
+    hotel_reviews_sorted_by_sentiment = hotel_reviews.sort_values(by='Sentiment Score', ascending=False)
+    
+    if not hotel_reviews_sorted_by_sentiment.empty:
+        st.subheader(f"Top Positive Review for {hotel_name_input}")
+        top_positive_review = hotel_reviews_sorted_by_sentiment.iloc[0]
+        st.write(f"**Rating:** {top_positive_review['Rating']}")
+        st.write(f"**Review Title:** {top_positive_review['Review Title']}")
+        st.write(f"**Review Text:** {top_positive_review['Review Text']}")
+        
+        st.subheader(f"Top Negative Review for {hotel_name_input}")
+        top_negative_review = hotel_reviews_sorted_by_sentiment.iloc[-1]
+        st.write(f"**Rating:** {top_negative_review['Rating']}")
+        st.write(f"**Review Title:** {top_negative_review['Review Title']}")
+        st.write(f"**Review Text:** {top_negative_review['Review Text']}")
+    else:
+        st.write(f"No reviews available for {hotel_name_input}.")
