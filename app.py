@@ -150,9 +150,9 @@ category_column = category_options[selected_category]
 top_hotels = hotel_sentiment_df.nlargest(5, category_column)
 st.table(top_hotels[['hotel_name', category_column]].rename(columns={category_column: f"{selected_category} Score"}))
 
-st.subheader(f"Top 5 Hotels for {selected_category} (Box Plot)")
+st.subheader(f"Top 5 Hotels for {selected_category}")
 plt.figure(figsize=(8, 5))
-sns.boxplot(data=top_hotels, x=category_column, y='hotel_name', palette="viridis")
+sns.barplot(x=top_hotels[category_column], y=top_hotels['hotel_name'], palette="viridis")
 plt.xlabel(f"{selected_category} Score")
 plt.ylabel("Hotel Name")
 st.pyplot(plt)
