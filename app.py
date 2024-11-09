@@ -149,14 +149,13 @@ selected_category = st.selectbox("Choose Sentiment Category", list(category_opti
 category_column = category_options[selected_category]
 top_hotels = hotel_sentiment_df.nlargest(5, category_column)
 st.table(top_hotels[['hotel_name', category_column]].rename(columns={category_column: f"{selected_category} Score"}))
-
-st.subheader(f"{selected_category} Score Trend for Top 5 Hotels")
-for hotel in top_hotels['hotel_name']:
-    hotel_data = hotel_sentiment_df[hotel_sentiment_df['hotel_name'] == hotel]
-    plt.plot(hotel_data['date'], hotel_data[category_column], label=hotel)
-
-plt.xlabel("Date")
-plt.ylabel(f"{selected_category} Score")
-plt.legend()
+# Plot bar chart for top 5 hotels
+st.subheader(f"Top 5 Hotels for {selected_category}")
+plt.figure(figsize=(8, 5))
+sns.barplot(x=top_hotels[category_column], y=top_hotels['hotel_name'], palette="viridis")
+plt.xlabel(f"{selected_category} Score")
+plt.ylabel("Hotel Name")
 st.pyplot(plt)
+
+
 
