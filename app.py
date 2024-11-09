@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import re
 
 # Load data function with error handling
 @st.cache_data
@@ -14,7 +15,8 @@ def load_data():
         return pd.DataFrame(), pd.DataFrame()
 
     return hotel_sentiment_df, review_details_df
-   # Function to extract country from hotel_name 
+
+# Function to extract country from hotel_name
 def extract_country(hotel_name):
     matches = re.findall(r'\(([^)]+)\)', hotel_name)
     return matches[-1] if matches else None
@@ -24,8 +26,6 @@ hotel_sentiment_df, review_details_df = load_data()
 
 # Create a new 'country' column in hotel_sentiment_df
 hotel_sentiment_df['country'] = hotel_sentiment_df['hotel_name'].apply(extract_country)
-# Load data
-hotel_sentiment_df, review_details_df = load_data()
 
 # Search for a hotel and display relevant sentiment data
 st.header("Search for Hotel Sentiments by Category")
@@ -100,10 +100,6 @@ if not review_details_df.empty:
     review_details_df['Stay Date'] = pd.to_datetime(review_details_df['Stay Date'], errors='coerce')  # Ensure the date is in datetime format
     review_details_df['Month'] = review_details_df['Stay Date'].dt.month_name()
     review_details_df['Year'] = review_details_df['Stay Date'].dt.year
-if not review_details_df.empty:
-    review_details_df['Stay Date'] = pd.to_datetime(review_details_df['Stay Date'], errors='coerce')  # Ensure the date is in datetime format
-    review_details_df['Month'] = review_details_df['Stay Date'].dt.month_name()
-    review_details_df['Year'] = review_details_df['Stay Date'].dt.year
 
 # Plotting the count of reviews by Month for the selected hotel
 if hotel_name_input and not review_details_df.empty:
@@ -123,8 +119,6 @@ if hotel_name_input and not review_details_df.empty:
         st.pyplot(plt)
     else:
         st.write(f"No reviews found for {hotel_name_input}.")
-# Filter reviews by hotel_name_input
-hotel_reviews = review_details_df[review_details_df['hotel_name'].str.contains(hotel_name_input, case=False, na=False)]
 
 # Top Positive & Negative Reviews
 if hotel_name_input and not hotel_reviews.empty:
