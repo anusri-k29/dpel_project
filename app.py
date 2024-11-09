@@ -1,56 +1,100 @@
-import pandas as pd
 import streamlit as st
+import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-# Load your data as usual
+# Load data function with error handling
 @st.cache_data
 def load_data():
+    # Load hotel sentiment summary
     try:
         hotel_sentiment_df = pd.read_csv('summary_review_1.csv')
+    except FileNotFoundError:
+        st.error("File 'summary_review_1.csv' not found. Please ensure it is in the app directory.")
+        hotel_sentiment_df = pd.DataFrame()  # Empty DataFrame as a fallback
+
+    # Load individual review details
+    try:
         review_details_df = pd.read_csv('indi_reviews.csv')
     except FileNotFoundError:
-        st.error("One or more required files are missing.")
-        return pd.DataFrame(), pd.DataFrame()
+        st.error("File 'indi_reviews.csv' not found. Please ensure it is in the app directory.")
+        review_details_df = pd.DataFrame()  # Empty DataFrame as a fallback
 
     return hotel_sentiment_df, review_details_df
 
-# Load data
+# Load data at the start of the app
 hotel_sentiment_df, review_details_df = load_data()
 
-# Add a 'Month' and 'Year' column to review_details_df
+# Display DataFrames if they loaded successfully
+if not hotel_sentiment_df.empty:
+    st.header("Aggregated Hotel Sentiment Summary")
+    st.write(hotel_sentiment_df)
+
 if not review_details_df.empty:
-    review_details_df['Stay Date'] = pd.to_datetime(review_details_df['Stay Date'], errors='coerce')  # Ensure the date is in datetime format
-    review_details_df['Month'] = review_details_df['Stay Date'].dt.month
-    review_details_df['Year'] = review_details_df['Stay Date'].dt.year
+    st.header("Individual Review Details")
+    st.write(review_details_df)
 
-# User input for hotel name
-hotel_name_input = st.text_input('Enter Hotel Name', '')
+# Hotel name search functionality
+hotel_name = st.text_input('Enter the name of the hotel you want to analyze:')
 
-if hotel_name_input:
-    # Filter reviews for the given hotel name
-    filtered_reviews = review_details_df[review_details_df['hotel_name'].str.contains(hotel_name_input, case=False, na=False)]
-    
-    if not filtered_reviews.empty:
-        # Group by Month and calculate review counts to show the popularity of months
-        reviews_by_month = filtered_reviews.groupby('Month').size().reset_index(name='Review Count')
+# Check if the user inputted a hotel name
+if hotel_name:
+    # Filter reviews for the selected hotel
+    hotel_reviews = review_details_df[review_details_df['hotel_name'].str.contains(hotel_name, case=False, na=False)]
+
+    if not hotel_reviews.empty:
+        st.write(f"Reviews for {hotel_name}:")
         
-        # Sort by Month (Optional, but helpful for time-series)
-        reviews_by_month = reviews_by_month.sort_values('Month')
+        # Ensure 'Stay Date' column is in DateTime format
+        hotel_reviews['Stay Date'] = pd.to_datetime(hotel_reviews['Stay Date'], errors='coerce')
+
+        # Extract Year and Month from 'Stay Date'
+        hotel_reviews['Year'] = hotel_reviews['Stay Date'].dt.year
+        hotel_reviews['Month'] = hotel_reviews['Stay Date'].dt.month_name()
+
+        # List of categories to visualize
+        categories = ['Food Quality Score', 'Service Quality Score', 'Staff Friendliness Score', 
+                      'Cleanliness Score', 'Ambiance Score', 'Value for Money Score', 
+                      'Room Comfort Score', 'Amenities Score']
+
+        # Melt the data for monthly trends analysis
+        category_trends = pd.melt(hotel_reviews, id_vars=['Year', 'Month'], value_vars=categories)
+
+        # Group by Year, Month, and Category to get the average score
+        category_trends_avg = category_trends.groupby(['Year', 'Month', 'variable'])['value'].mean().reset_index()
+
+        # Plotting the results as a bar plot
+        plt.figure(figsize=(10, 6))
+        sns.barplot(data=category_trends_avg, x='Month', y='value', hue='variable')
+
+        # Rotate the x-axis labels for better readability
+        plt.xticks(rotation=45)
+
+        # Show the plot
+        st.pyplot(plt)
         
-        # Plot the data
-        st.header(f"Popular Months for {hotel_name_input}")
-        
-        fig, ax = plt.subplots(figsize=(10, 6))
-        sns.barplot(x='Month', y='Review Count', data=reviews_by_month, ax=ax, palette='coolwarm')
-        
-        # Formatting
-        ax.set_title(f"Most Popular Months for {hotel_name_input}", fontsize=16)
-        ax.set_xlabel("Month", fontsize=12)
-        ax.set_ylabel("Number of Reviews", fontsize=12)
-        ax.set_xticklabels(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], rotation=45)
-        
-        # Show plot in Streamlit app
-        st.pyplot(fig)
+        # Display Overall Sentiment (Positive, Negative, Neutral, Excellent, Good, etc.)
+        overall_sentiment = hotel_reviews['Sentiment'].mode()[0]  # Most frequent sentiment
+        sentiment_color = {
+            'Positive': 'green',
+            'Negative': 'red',
+            'Neutral': 'orange',
+            'Excellent': 'darkgreen',
+            'Good': 'lightgreen',
+            'Bad': 'red'
+        }
+
+        # Display the sentiment with the appropriate color
+        st.markdown(f"### Overall Sentiment: <span style='color:{sentiment_color.get(overall_sentiment, 'black')};'>{overall_sentiment}</span>", unsafe_allow_html=True)
+
+        # Display detailed sentiments for each category (Food, Staff, etc.)
+        for category in categories:
+            category_sentiment = hotel_reviews[f'{category} Sentiment'].mode()[0]  # Most frequent sentiment for each category
+            st.markdown(f"**{category.replace('_', ' ').title()}:** <span style='color:{sentiment_color.get(category_sentiment, 'black')};'>{category_sentiment}</span>", unsafe_allow_html=True)
+
     else:
-        st.warning(f"No reviews found for the hotel '{hotel_name_input}'. Please try a different hotel.")
+        st.write(f"No reviews found for {hotel_name}.")
+
+else:
+    st.write("Please enter a hotel name to start the analysis.")
+
