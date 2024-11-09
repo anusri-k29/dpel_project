@@ -63,9 +63,9 @@ if hotel_name:
         # Group by Year, Month, and Category to get the average score
         category_trends_avg = category_trends.groupby(['Year', 'Month', 'variable'])['value'].mean().reset_index()
 
-        # Plotting the results as a bar plot
+        # Plotting the results as a line plot
         plt.figure(figsize=(10, 6))
-        sns.barplot(data=category_trends_avg, x='Month', y='value', hue='variable')
+        sns.lineplot(data=category_trends_avg, x='Month', y='value', hue='variable', marker='o')
 
         # Rotate the x-axis labels for better readability
         plt.xticks(rotation=45)
@@ -78,7 +78,7 @@ if hotel_name:
         sentiment_color = {
             'Positive': 'green',
             'Negative': 'red',
-            'Neutral': 'orange',
+            'Neutral': 'yellow',
             'Excellent': 'darkgreen',
             'Good': 'lightgreen',
             'Bad': 'red'
@@ -97,4 +97,3 @@ if hotel_name:
 
 else:
     st.write("Please enter a hotel name to start the analysis.")
-
