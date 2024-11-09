@@ -6,3 +6,4 @@ pyngrok
 pandas
 streamlit
 matplotlib
+seaborn
