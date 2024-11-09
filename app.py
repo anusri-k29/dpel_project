@@ -111,3 +111,9 @@ if hotel_name_input and not review_details_df.empty:
         st.pyplot(plt)
     else:
         st.write(f"No reviews found for {hotel_name_input}.")
+sentiment_ratings = hotel_reviews[['Rating', 'Food Sentiment', 'Service Sentiment', 'Staff Sentiment']]
+sentiment_ratings_encoded = sentiment_ratings.apply(pd.Categorical)
+corr = sentiment_ratings_encoded.corr()
+plt.figure(figsize=(8, 6))
+sns.heatmap(corr, annot=True, cmap='coolwarm')
+st.pyplot(plt)
