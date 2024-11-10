@@ -71,8 +71,68 @@ if page == "SSCA Data Analysis":
     filtered_data = data[(data['Age'] >= age_range[0]) & (data['Age'] <= age_range[1])]
     st.write(f"Data for Age Range {age_range[0]} - {age_range[1]}")
     st.dataframe(filtered_data)
+# 1. Age vs. Department Analysis
+st.subheader("Age Distribution by Culinary Department")
+selected_dept = st.multiselect("Select Culinary Departments:", data['CAdept'].unique(), default=data['CAdept'].unique())
+filtered_data_dept = data[data['CAdept'].isin(selected_dept)]
+fig, ax = plt.subplots()
+sns.boxplot(data=filtered_data_dept, x="CAdept", y="Age", ax=ax, palette="Set3")
+ax.set_title("Age Distribution by Culinary Department")
+plt.xticks(rotation=45)
+st.pyplot(fig)
 
-# Hotel Sentiment Analysis Page
+# 2. Career Aspirations by Department
+st.subheader("Career Aspirations by Culinary Department")
+career_dept_counts = data.groupby(['CAdept', 'future_career']).size().unstack().fillna(0)
+fig, ax = plt.subplots()
+career_dept_counts.plot(kind='bar', stacked=True, ax=ax, colormap="viridis")
+ax.set_title("Career Aspirations by Culinary Department")
+ax.set_xlabel("Culinary Department")
+ax.set_ylabel("Count")
+plt.xticks(rotation=45)
+st.pyplot(fig)
+
+# 3. Gender and Country Preferences
+st.subheader("Gender and Country Preferences")
+selected_gender = st.radio("Select Gender:", data['Gender'].unique(), index=0)
+filtered_data_gender = data[data['Gender'] == selected_gender]
+country_counts = filtered_data_gender['Country1'].value_counts().head(10)
+fig, ax = plt.subplots()
+sns.barplot(x=country_counts.values, y=country_counts.index, palette="coolwarm", ax=ax)
+ax.set_title(f"Top Preferred Countries by {selected_gender}")
+ax.set_xlabel("Count")
+st.pyplot(fig)
+
+# 4. Stay Intentions Analysis
+st.subheader("Stay Intentions")
+stay_counts = data['stay'].value_counts()
+fig, ax = plt.subplots()
+ax.pie(stay_counts, labels=stay_counts.index, autopct='%1.1f%%', startangle=140, colors=sns.color_palette("pastel"))
+ax.set_title("Stay Intentions")
+st.pyplot(fig)
+
+# 5. Top Hotel Preferences per Country
+st.subheader("Top Hotel Preferences by Country")
+selected_country = st.selectbox("Select Country:", data['Country1'].unique())
+country_hotels = data[data['Country1'] == selected_country][['C1hotel1', 'C1hotel2']].melt(value_name='Hotels').dropna()
+hotel_counts = country_hotels['Hotels'].value_counts().head(10)
+fig, ax = plt.subplots()
+sns.barplot(x=hotel_counts.values, y=hotel_counts.index, palette="cubehelix", ax=ax)
+ax.set_title(f"Top Hotels in {selected_country}")
+ax.set_xlabel("Count")
+st.pyplot(fig)
+
+# 6. Batch vs. Career Aspiration Correlation
+st.subheader("Career Aspirations by Batch")
+career_batch_counts = data.groupby(['Batch', 'future_career']).size().unstack().fillna(0)
+fig, ax = plt.subplots()
+career_batch_counts.plot(kind='bar', stacked=True, ax=ax, colormap="spring")
+ax.set_title("Career Aspirations by Batch")
+ax.set_xlabel("Batch")
+ax.set_ylabel("Count")
+plt.xticks(rotation=45)
+st.pyplot(fig)
+# Hotel Sentiment Analysis Page -------------------------------------------------------
 elif page == "Hotel Sentiment Analysis":
     hotel_sentiment_df, review_details_df = load_hotel_data()
     st.title("Hotel Sentiment Analysis Dashboard")
