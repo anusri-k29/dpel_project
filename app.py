@@ -173,7 +173,7 @@ if page == "SSCA Data Analysis":
 # ----------------------------Hotel Sentiment Analysis Page ----------------------------------------
 # ----------------------------Hotel Sentiment Analysis Page ----------------------------------------
 if page == "Hotel Sentiment Analysis":
-    hotel_sentiment_df, review_details_df = load_hotel_data()
+    hotel_sentiment_df, review_details_df, all_reviews_df = load_hotel_data()
     st.title("Hotel Sentiment Analysis Dashboard")
     st.write("Search and explore sentiment analysis by hotel.")
     
