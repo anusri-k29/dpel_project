@@ -60,14 +60,21 @@ if page == "SSCA Data Analysis":
     st.write(f"Data for Age Range {age_range[0]} - {age_range[1]}")
     st.dataframe(filtered_data)
 # 1. Age vs. Department Analysis
+# 1. Age vs. Department Analysis
 st.subheader("Age Distribution by Culinary Department")
-selected_dept = st.multiselect("Select Culinary Departments:", data['CAdept'].unique(), default=data['CAdept'].unique())
-filtered_data_dept = data[data['CAdept'].isin(selected_dept)]
+
+# Filter data for all departments (no multiselect filtering)
+filtered_data_dept = data  # No filtering by department
+
+# Create the boxplot
 fig, ax = plt.subplots()
 sns.boxplot(data=filtered_data_dept, x="CAdept", y="Age", ax=ax, palette="Set3")
 ax.set_title("Age Distribution by Culinary Department")
 plt.xticks(rotation=45)
+
+# Display the plot
 st.pyplot(fig)
+
 
 # 2. Career Aspirations by Department
 st.subheader("Career Aspirations by Culinary Department")
