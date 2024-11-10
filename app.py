@@ -172,7 +172,7 @@ if page == "SSCA Data Analysis":
     st.pyplot(fig)
 # ----------------------------Hotel Sentiment Analysis Page ----------------------------------------
 if page == "Hotel Sentiment Analysis":
-    hotel_sentiment_df, review_details_df = load_hotel_data()
+    hotel_sentiment_df, review_details_df, all_reviews_df = load_hotel_data()
     st.title("Hotel Sentiment Analysis Dashboard")
     st.write("Search and explore sentiment analysis by hotel.")
     # Input field for hotel name and search button
