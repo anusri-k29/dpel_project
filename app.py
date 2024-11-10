@@ -97,12 +97,6 @@ ax.set_xlabel("Count")
 ax.set_ylabel("Country")  # Add this line to set y-axis title
 st.pyplot(fig)
 
-# Plot the top preferred countries by selected gender
-fig, ax = plt.subplots()
-sns.barplot(x=country_counts.values, y=country_counts.index, palette="coolwarm", ax=ax)
-ax.set_title(f"Top Preferred Countries by {selected_gender}")
-ax.set_xlabel("Count")
-st.pyplot(fig)
 # 4. Stay Intentions Analysis
 st.subheader("Stay Intentions")
 stay_counts = data['stay'].value_counts()
@@ -122,16 +116,7 @@ ax.set_title(f"Top Hotels in {selected_country}")
 ax.set_xlabel("Count")
 st.pyplot(fig)
 
-# 6. Batch vs. Career Aspiration Correlation
-st.subheader("Career Aspirations by Batch")
-career_batch_counts = data.groupby(['Batch', 'future_career']).size().unstack().fillna(0)
-fig, ax = plt.subplots()
-career_batch_counts.plot(kind='bar', stacked=True, ax=ax, colormap="spring")
-ax.set_title("Career Aspirations by Batch")
-ax.set_xlabel("Batch")
-ax.set_ylabel("Count")
-plt.xticks(rotation=45)
-st.pyplot(fig)
+
 # Hotel Sentiment Analysis Page -------------------------------------------------------
 if page == "Hotel Sentiment Analysis":
     hotel_sentiment_df, review_details_df = load_hotel_data()
