@@ -191,7 +191,6 @@ if page == "Hotel Sentiment Analysis":
     st.pyplot(plt)
 ### --------------------------------------
 import plotly.express as px
-
     # 8. Interactive Sentiment Distribution for Each Hotel
     st.subheader("Interactive Sentiment Distribution for Each Hotel")
     
@@ -219,7 +218,6 @@ import plotly.express as px
     
     # Show the plot
     st.plotly_chart(fig)
-
 
 
 
