@@ -171,16 +171,13 @@ if page == "SSCA Data Analysis":
     plt.xticks(rotation=45)
     st.pyplot(fig)
 # ----------------------------Hotel Sentiment Analysis Page ----------------------------------------
-# ----------------------------Hotel Sentiment Analysis Page ----------------------------------------
 if page == "Hotel Sentiment Analysis":
     hotel_sentiment_df, review_details_df, all_reviews_df = load_hotel_data()
     st.title("Hotel Sentiment Analysis Dashboard")
     st.write("Search and explore sentiment analysis by hotel.")
-    
     # Input field for hotel name and search button
     hotel_name_input = st.text_input("Enter hotel name:")
     search_button = st.button("Search Hotel Sentiment")
-    
     if search_button and hotel_name_input:
         hotel_name_input_cleaned = hotel_name_input.strip().lower()
         hotel_sentiment_df['hotel_name_cleaned'] = hotel_sentiment_df['hotel_name'].str.strip().str.lower()
@@ -213,37 +210,9 @@ if page == "Hotel Sentiment Analysis":
                     col2.markdown(f"<p style='color:{category_color}; font-size:18px;'>{sentiment_display}</p>", unsafe_allow_html=True)
         else:
             st.write(f"Hotel '{hotel_name_input}' not found in the summary data.")
-    
-    # --- Trip Type Analysis ---
-    st.subheader("Trip Type Analysis")
-
-    # Check if 'Trip Type' exists in the DataFrame
-    if 'Trip Type' in hotel_sentiment_df.columns:
-        # Optional: Clean Trip Type data
-        hotel_sentiment_df['Trip Type'] = hotel_sentiment_df['Trip Type'].str.lower().str.strip().str.title()
-        
-        trip_type_counts = hotel_sentiment_df['Trip Type'].value_counts().sort_values(ascending=False)
-        
-        # Display the counts as a table (optional)
-        st.write("Distribution of Trip Types:")
-        st.table(trip_type_counts.reset_index().rename(columns={'index': 'Trip Type', 'Trip Type': 'Count'}))
-        
-        # Create a bar chart for Trip Type distribution
-        fig, ax = plt.subplots(figsize=(10, 6))
-        sns.barplot(x=trip_type_counts.values, y=trip_type_counts.index, palette="mako", ax=ax)
-        ax.set_title("Distribution of Trip Types in Hotel Reviews", fontsize=16)
-        ax.set_xlabel("Count", fontsize=14)
-        ax.set_ylabel("Trip Type", fontsize=14)
-        plt.xticks(rotation=45)
-        
-        # Display the plot
-        st.pyplot(fig)
-    else:
-        st.write("Trip Type data is not available in the hotel sentiment dataset.")
-
     # Top Positive & Negative Reviews
-    if hotel_name_input and not selected_hotel_summary.empty:
-        hotel_reviews_sorted_by_sentiment = selected_hotel_summary.sort_values(by='Sentiment Score', ascending=False)
+    if hotel_name_input and not hotel_reviews.empty:
+        hotel_reviews_sorted_by_sentiment = hotel_reviews.sort_values(by='Sentiment Score', ascending=False)
         
         if not hotel_reviews_sorted_by_sentiment.empty:
             st.subheader(f"Top Positive Review for {hotel_name_input}")
@@ -259,7 +228,7 @@ if page == "Hotel Sentiment Analysis":
             st.write(f"**Review Text:** {top_negative_review['Review Text']}")
         else:
             st.write(f"No reviews available for {hotel_name_input}.")
-    
+
     # Top 5 Hotels by Selected Category
     st.subheader("Top 5 Hotels by Selected Sentiment Category")
     category_options = {
@@ -276,8 +245,22 @@ if page == "Hotel Sentiment Analysis":
 
     # Plot bar chart for top 5 hotels
     st.subheader(f"Top 5 Hotels for {selected_category}")
-    fig, ax = plt.subplots(figsize=(8, 5))
-    sns.barplot(x=top_hotels[category_column], y=top_hotels['hotel_name'], palette="viridis", ax=ax)
-    ax.set_xlabel(f"{selected_category} Score")
-    ax.set_ylabel("Hotel Name")
-    st.pyplot(fig)
+    plt.figure(figsize=(8, 5))
+    sns.barplot(x=top_hotels[category_column], y=top_hotels['hotel_name'], palette="viridis")
+    plt.xlabel(f"{selected_category} Score")
+    plt.ylabel("Hotel Name")
+    st.pyplot(plt)
+      # --- Trip Type Analysis ---
+    st.subheader("Trip Type Distribution")
+    if 'Trip Type' in all_reviews_df.columns:
+        
+        trip_type_counts = all_reviews_df['Trip Type'].value_counts()
+        fig, ax = plt.subplots()
+        sns.barplot(x=trip_type_counts.index, y=trip_type_counts.values, palette="Set2", ax=ax)
+        ax.set_title("Distribution of Trip Types")
+        ax.set_xlabel("Trip Type")
+        ax.set_ylabel("Count")
+        plt.xticks(rotation=45)
+        st.pyplot(fig)
+    else:
+        st.write("The 'Trip Type' column is missing from the dataset.")
