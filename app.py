@@ -11,7 +11,7 @@ st.markdown(
     """
     <style>
     .main {
-        background-color: #f0f2f6;
+        background-color: #fff1e6;
     }
     </style>
     """,
@@ -133,7 +133,7 @@ ax.set_ylabel("Count")
 plt.xticks(rotation=45)
 st.pyplot(fig)
 # Hotel Sentiment Analysis Page -------------------------------------------------------
-elif page == "Hotel Sentiment Analysis":
+if page == "Hotel Sentiment Analysis":
     hotel_sentiment_df, review_details_df = load_hotel_data()
     st.title("Hotel Sentiment Analysis Dashboard")
     st.write("Search and explore sentiment analysis by hotel.")
