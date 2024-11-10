@@ -187,7 +187,3 @@ if page == "Hotel Sentiment Analysis":
     plt.xlabel(f"{selected_category} Score")
     plt.ylabel("Hotel Name")
     st.pyplot(plt)
-
-
-
-
