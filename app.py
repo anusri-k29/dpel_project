@@ -59,69 +59,69 @@ if page == "SSCA Data Analysis":
     filtered_data = data[(data['Age'] >= age_range[0]) & (data['Age'] <= age_range[1])]
     st.write(f"Data for Age Range {age_range[0]} - {age_range[1]}")
     st.dataframe(filtered_data)
+
 # 1. Age vs. Department Analysis
-# 1. Age vs. Department Analysis
-st.subheader("Age Distribution by Culinary Department")
+    st.subheader("Age Distribution by Culinary Department")
 
 # Filter data for all departments (no multiselect filtering)
-filtered_data_dept = data  # No filtering by department
+    filtered_data_dept = data  # No filtering by department
 
 # Create the boxplot
-fig, ax = plt.subplots()
-sns.boxplot(data=filtered_data_dept, x="CAdept", y="Age", ax=ax, palette="Set3")
-ax.set_title("Age Distribution by Culinary Department")
-plt.xticks(rotation=45)
+    fig, ax = plt.subplots()
+    sns.boxplot(data=filtered_data_dept, x="CAdept", y="Age", ax=ax, palette="Set3")
+    ax.set_title("Age Distribution by Culinary Department")
+    plt.xticks(rotation=45)
 
 # Display the plot
-st.pyplot(fig)
+    st.pyplot(fig)
 
 
 # 2. Career Aspirations by Department
-st.subheader("Career Aspirations by Culinary Department")
-career_dept_counts = data.groupby(['CAdept', 'future_career']).size().unstack().fillna(0)
-fig, ax = plt.subplots()
-career_dept_counts.plot(kind='bar', stacked=True, ax=ax, colormap="viridis")
-ax.set_title("Career Aspirations by Culinary Department")
-ax.set_xlabel("Culinary Department")
-ax.set_ylabel("Count")
-plt.xticks(rotation=45)
-st.pyplot(fig)
+    st.subheader("Career Aspirations by Culinary Department")
+    career_dept_counts = data.groupby(['CAdept', 'future_career']).size().unstack().fillna(0)
+    fig, ax = plt.subplots()
+    career_dept_counts.plot(kind='bar', stacked=True, ax=ax, colormap="viridis")
+    ax.set_title("Career Aspirations by Culinary Department")
+    ax.set_xlabel("Culinary Department")
+    ax.set_ylabel("Count")
+    plt.xticks(rotation=45)
+    st.pyplot(fig)
 
 # 3. Gender and Country Preferences
-st.subheader("Gender and Country Preferences")
-# Select gender and filter data
-selected_gender = st.radio("Select Gender:", data['Gender'].unique(), index=0)
-filtered_data_gender = data[data['Gender'] == selected_gender]
-# Combine Country1 and Country2 columns into one series and count occurrences
-countries_combined = pd.concat([filtered_data_gender['Country1'], filtered_data_gender['Country2']])
-country_counts = countries_combined.value_counts().head(10)
+    st.subheader("Gender and Country Preferences")
+    # Select gender and filter data
+    selected_gender = st.radio("Select Gender:", data['Gender'].unique(), index=0)
+    filtered_data_gender = data[data['Gender'] == selected_gender]
+    # Combine Country1 and Country2 columns into one series and count occurrences
+    countries_combined = pd.concat([filtered_data_gender['Country1'], filtered_data_gender['Country2']])
+    country_counts = countries_combined.value_counts().head(10)
 
 # Plot the top preferred countries by selected gender
-fig, ax = plt.subplots()
-sns.barplot(x=country_counts.values, y=country_counts.index, palette="coolwarm", ax=ax)
-ax.set_title(f"Top Preferred Countries by {selected_gender}")
-ax.set_xlabel("Count")
-ax.set_ylabel("Country")  # Add this line to set y-axis title
-st.pyplot(fig)
+    fig, ax = plt.subplots()
+    sns.barplot(x=country_counts.values, y=country_counts.index, palette="coolwarm", ax=ax)
+    ax.set_title(f"Top Preferred Countries by {selected_gender}")
+    ax.set_xlabel("Count")
+    ax.set_ylabel("Country")  # Add this line to set y-axis title
+    st.pyplot(fig)
 
 # 4. Stay Intentions Analysis
-st.subheader("Stay Intentions")
-stay_counts = data['stay'].value_counts()
-fig, ax = plt.subplots()
-ax.pie(stay_counts, labels=stay_counts.index, autopct='%1.1f%%', startangle=140, colors=sns.color_palette("pastel"))
-ax.set_title("Stay Intentions")
-st.pyplot(fig)
+    st.subheader("Stay Intentions")
+    stay_counts = data['stay'].value_counts()
+    fig, ax = plt.subplots()
+    ax.pie(stay_counts, labels=stay_counts.index, autopct='%1.1f%%', startangle=140, colors=sns.color_palette("pastel"))
+    ax.set_title("Stay Intentions")
+    st.pyplot(fig)
 
 # 5. Top Hotel Preferences per Country
-st.subheader("Top Hotel Preferences by Country")
-selected_country = st.selectbox("Select Country:", data['Country1'].unique())
-country_hotels = data[data['Country1'] == selected_country][['C1hotel1', 'C1hotel2']].melt(value_name='Hotels').dropna()
-hotel_counts = country_hotels['Hotels'].value_counts().head(10)
-fig, ax = plt.subplots()
-sns.barplot(x=hotel_counts.values, y=hotel_counts.index, palette="cubehelix", ax=ax)
-ax.set_title(f"Top Hotels in {selected_country}")
-ax.set_xlabel("Count")
-st.pyplot(fig)
+    st.subheader("Top Hotel Preferences by Country")
+    selected_country = st.selectbox("Select Country:", data['Country1'].unique())
+    country_hotels = data[data['Country1'] == selected_country][['C1hotel1', 'C1hotel2']].melt(value_name='Hotels').dropna()
+    hotel_counts = country_hotels['Hotels'].value_counts().head(10)
+    fig, ax = plt.subplots()
+    sns.barplot(x=hotel_counts.values, y=hotel_counts.index, palette="cubehelix", ax=ax)
+    ax.set_title(f"Top Hotels in {selected_country}")
+    ax.set_xlabel("Count")
+    st.pyplot(fig)
 
 
 # Hotel Sentiment Analysis Page -------------------------------------------------------
