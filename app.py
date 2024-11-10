@@ -249,3 +249,29 @@ if page == "Hotel Sentiment Analysis":
     plt.xlabel(f"{selected_category} Score")
     plt.ylabel("Hotel Name")
     st.pyplot(plt)
+      # --- Trip Type Analysis ---
+    st.subheader("Trip Type Analysis")
+
+    # Check if 'Trip Type' exists in the DataFrame
+    if 'Trip Type' in hotel_sentiment_df.columns:
+        # Optional: Clean Trip Type data
+        hotel_sentiment_df['Trip Type'] = hotel_sentiment_df['Trip Type'].str.lower().str.strip().str.title()
+        
+        trip_type_counts = hotel_sentiment_df['Trip Type'].value_counts().sort_values(ascending=False)
+        
+        # Display the counts as a table (optional)
+        st.write("Distribution of Trip Types:")
+        st.table(trip_type_counts.reset_index().rename(columns={'index': 'Trip Type', 'Trip Type': 'Count'}))
+        
+        # Create a bar chart for Trip Type distribution
+        fig, ax = plt.subplots(figsize=(10, 6))
+        sns.barplot(x=trip_type_counts.values, y=trip_type_counts.index, palette="mako", ax=ax)
+        ax.set_title("Distribution of Trip Types in Hotel Reviews", fontsize=16)
+        ax.set_xlabel("Count", fontsize=14)
+        ax.set_ylabel("Trip Type", fontsize=14)
+        plt.xticks(rotation=45)
+        
+        # Display the plot
+        st.pyplot(fig)
+    else:
+        st.write("Trip Type data is not available in the hotel sentiment dataset.")
