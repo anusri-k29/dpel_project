@@ -211,7 +211,7 @@ if page == "Hotel Sentiment Analysis":
         else:
             st.write(f"Hotel '{hotel_name_input}' not found in the summary data.")
     # Top Positive & Negative Reviews
-   if hotel_name_input and not review_details_df.empty:
+    if hotel_name_input and not review_details_df.empty:
     # Ensure 'Sentiment Score' exists
     if 'Sentiment Score' in review_details_df.columns:
         # Filter reviews for the given hotel
