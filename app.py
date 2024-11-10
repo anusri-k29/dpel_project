@@ -82,16 +82,20 @@ st.pyplot(fig)
 
 # 3. Gender and Country Preferences
 st.subheader("Gender and Country Preferences")
-
 # Select gender and filter data
 selected_gender = st.radio("Select Gender:", data['Gender'].unique(), index=0)
 filtered_data_gender = data[data['Gender'] == selected_gender]
-
 # Combine Country1 and Country2 columns into one series and count occurrences
 countries_combined = pd.concat([filtered_data_gender['Country1'], filtered_data_gender['Country2']])
 country_counts = countries_combined.value_counts().head(10)
+
+# Plot the top preferred countries by selected gender
+fig, ax = plt.subplots()
+sns.barplot(x=country_counts.values, y=country_counts.index, palette="coolwarm", ax=ax)
+ax.set_title(f"Top Preferred Countries by {selected_gender}")
 ax.set_xlabel("Count")
-ax.set_ylabel("Country")
+ax.set_ylabel("Country")  # Add this line to set y-axis title
+st.pyplot(fig)
 
 # Plot the top preferred countries by selected gender
 fig, ax = plt.subplots()
