@@ -24,7 +24,7 @@ page = st.sidebar.selectbox("Choose a Page", ["SSCA Data Analysis", "Hotel Senti
 # Load data
 @st.cache_data
 def load_ssca_data():
-    return pd.read_csv('SSCA_datanew.csv')
+    return pd.read_csv('SSCA_final_data.csv')
 
 @st.cache_data
 def load_hotel_data():
