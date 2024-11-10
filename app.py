@@ -1,6 +1,3 @@
-# Install Streamlit and necessary libraries
-# !pip install streamlit seaborn matplotlib pandas
-
 import streamlit as st
 import pandas as pd
 import seaborn as sns
@@ -9,7 +6,7 @@ st.cache_data.clear()
 # Sidebar for page selection
 page = st.sidebar.selectbox("Choose a Page", ["SSCA Data Analysis", "Hotel Sentiment Analysis"])
 
-# Load data
+# Loading the data
 @st.cache_data
 def load_ssca_data():
     return pd.read_csv('SSCA_final_data.csv')
@@ -24,7 +21,7 @@ def load_hotel_data():
         return pd.DataFrame(), pd.DataFrame()
     return hotel_sentiment_df, review_details_df
 
-# SSCA Data Analysis Page
+# ----------------SSCA Data Analysis Page----------------------------
 if page == "SSCA Data Analysis":
     data = load_ssca_data()
     st.title("SSCA Data Analysis Dashboard")
@@ -60,23 +57,15 @@ if page == "SSCA Data Analysis":
     st.write(f"Data for Age Range {age_range[0]} - {age_range[1]}")
     st.dataframe(filtered_data)
 
-# 1. Age vs. Department Analysis
+#  Age vs. Department Analysis
     st.subheader("Age Distribution by Culinary Department")
-
-# Filter data for all departments (no multiselect filtering)
     filtered_data_dept = data  # No filtering by department
-
-# Create the boxplot
     fig, ax = plt.subplots()
     sns.boxplot(data=filtered_data_dept, x="CAdept", y="Age", ax=ax, palette="Set3")
     ax.set_title("Age Distribution by Culinary Department")
     plt.xticks(rotation=45)
-
-# Display the plot
     st.pyplot(fig)
-
-
-# 2. Career Aspirations by Department
+#  Career Aspirations by Department
     st.subheader("Career Aspirations by Culinary Department")
     career_dept_counts = data.groupby(['CAdept', 'future_career']).size().unstack().fillna(0)
     fig, ax = plt.subplots()
@@ -86,33 +75,28 @@ if page == "SSCA Data Analysis":
     ax.set_ylabel("Count")
     plt.xticks(rotation=45)
     st.pyplot(fig)
-
-# 3. Gender and Country Preferences
+# Gender and Country Preferences
     st.subheader("Gender and Country Preferences")
     # Select gender and filter data
     selected_gender = st.radio("Select Gender:", data['Gender'].unique(), index=0)
     filtered_data_gender = data[data['Gender'] == selected_gender]
-    # Combine Country1 and Country2 columns into one series and count occurrences
+    # Combine Country1 and Country2 columns 
     countries_combined = pd.concat([filtered_data_gender['Country1'], filtered_data_gender['Country2']])
     country_counts = countries_combined.value_counts().head(10)
-
-# Plot the top preferred countries by selected gender
     fig, ax = plt.subplots()
     sns.barplot(x=country_counts.values, y=country_counts.index, palette="coolwarm", ax=ax)
     ax.set_title(f"Top Preferred Countries by {selected_gender}")
     ax.set_xlabel("Count")
-    ax.set_ylabel("Country")  # Add this line to set y-axis title
+    ax.set_ylabel("Country") 
     st.pyplot(fig)
-
-# 4. Stay Intentions Analysis
+#  Stay Intentions Analysis
     st.subheader("Stay Intentions")
     stay_counts = data['stay'].value_counts()
     fig, ax = plt.subplots()
     ax.pie(stay_counts, labels=stay_counts.index, autopct='%1.1f%%', startangle=140, colors=sns.color_palette("pastel"))
     ax.set_title("Stay Intentions")
     st.pyplot(fig)
-
-# 5. Top Hotel Preferences per Country
+# Top Hotel Preferences per Country
     st.subheader("Top Hotel Preferences by Country")
     selected_country = st.selectbox("Select Country:", data['Country1'].unique())
     country_hotels = data[data['Country1'] == selected_country][['C1hotel1', 'C1hotel2']].melt(value_name='Hotels').dropna()
@@ -123,17 +107,14 @@ if page == "SSCA Data Analysis":
     ax.set_xlabel("Count")
     st.pyplot(fig)
 
-
-# Hotel Sentiment Analysis Page -------------------------------------------------------
+# ----------------------------Hotel Sentiment Analysis Page ----------------------------------------
 if page == "Hotel Sentiment Analysis":
     hotel_sentiment_df, review_details_df = load_hotel_data()
     st.title("Hotel Sentiment Analysis Dashboard")
     st.write("Search and explore sentiment analysis by hotel.")
-
     # Input field for hotel name and search button
     hotel_name_input = st.text_input("Enter hotel name:")
     search_button = st.button("Search Hotel Sentiment")
-
     if search_button and hotel_name_input:
         hotel_name_input_cleaned = hotel_name_input.strip().lower()
         hotel_sentiment_df['hotel_name_cleaned'] = hotel_sentiment_df['hotel_name'].str.strip().str.lower()
@@ -153,7 +134,6 @@ if page == "Hotel Sentiment Analysis":
                 'Cleanliness': 'Cleanliness Sentiment', 'Ambiance': 'Ambiance Sentiment',
                 'Value': 'Value Sentiment', 'Room': 'Room Sentiment', 'Amenities': 'Amenities Sentiment'
             }
-
             # Display categories in two columns
             col1, col2 = st.columns(2)
             for idx, (category, score_col) in enumerate(sentiment_categories.items()):
@@ -167,6 +147,24 @@ if page == "Hotel Sentiment Analysis":
                     col2.markdown(f"<p style='color:{category_color}; font-size:18px;'>{sentiment_display}</p>", unsafe_allow_html=True)
         else:
             st.write(f"Hotel '{hotel_name_input}' not found in the summary data.")
+    # Top Positive & Negative Reviews
+    if hotel_name_input and not hotel_reviews.empty:
+        hotel_reviews_sorted_by_sentiment = hotel_reviews.sort_values(by='Sentiment Score', ascending=False)
+        
+        if not hotel_reviews_sorted_by_sentiment.empty:
+            st.subheader(f"Top Positive Review for {hotel_name_input}")
+            top_positive_review = hotel_reviews_sorted_by_sentiment.iloc[0]
+            st.write(f"**Rating:** {top_positive_review['Rating']}")
+            st.write(f"**Review Title:** {top_positive_review['Review Title']}")
+            st.write(f"**Review Text:** {top_positive_review['Review Text']}")
+            
+            st.subheader(f"Top Negative Review for {hotel_name_input}")
+            top_negative_review = hotel_reviews_sorted_by_sentiment.iloc[-1]
+            st.write(f"**Rating:** {top_negative_review['Rating']}")
+            st.write(f"**Review Title:** {top_negative_review['Review Title']}")
+            st.write(f"**Review Text:** {top_negative_review['Review Text']}")
+        else:
+            st.write(f"No reviews available for {hotel_name_input}.")
 
     # Top 5 Hotels by Selected Category
     st.subheader("Top 5 Hotels by Selected Sentiment Category")
