@@ -190,7 +190,7 @@ if page == "Hotel Sentiment Analysis":
     plt.ylabel("Hotel Name")
     st.pyplot(plt)
 ### --------------------------------------
-   import plotly.express as px
+import plotly.express as px
 
     # 8. Interactive Sentiment Distribution for Each Hotel
     st.subheader("Interactive Sentiment Distribution for Each Hotel")
