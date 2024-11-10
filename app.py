@@ -190,28 +190,37 @@ if page == "Hotel Sentiment Analysis":
     plt.ylabel("Hotel Name")
     st.pyplot(plt)
 ### --------------------------------------
-    # 8. Sentiment Distribution for Each Hotel
-    st.subheader("Sentiment Distribution for Each Hotel")
-    sentiment_counts_per_hotel = hotel_sentiment_df.groupby(['hotel_name', 'Overall Sentiment']).size().unstack().fillna(0)
+   import plotly.express as px
+
+    # 8. Interactive Sentiment Distribution for Each Hotel
+    st.subheader("Interactive Sentiment Distribution for Each Hotel")
     
-    fig, ax = plt.subplots(figsize=(12, 6))
-    sentiment_counts_per_hotel.plot(kind='bar', stacked=True, ax=ax, colormap='Set3')
-    ax.set_title("Sentiment Distribution for Each Hotel")
-    ax.set_xlabel("Hotel Name")
-    ax.set_ylabel("Review Count")
-    plt.xticks(rotation=90)
-    st.pyplot(fig)
+    # Get list of unique hotels
+    hotel_list = hotel_sentiment_df['hotel_name'].unique()
+    
+    # User selects a hotel
+    selected_hotel = st.selectbox("Select a Hotel", hotel_list)
+    
+    # Filter the data for the selected hotel
+    hotel_data = hotel_sentiment_df[hotel_sentiment_df['hotel_name'] == selected_hotel]
+    
+    # Calculate sentiment distribution
+    sentiment_counts = hotel_data['Overall Sentiment'].value_counts(normalize=True) * 100  # Get percentages
+    
+    # Create a bar chart using Plotly
+    fig = px.bar(sentiment_counts, x=sentiment_counts.index, y=sentiment_counts.values,
+                 labels={'x': 'Sentiment', 'y': 'Percentage'},
+                 title=f"Sentiment Distribution for {selected_hotel}",
+                 color=sentiment_counts.index,
+                 color_discrete_map={'excellent': 'darkgreen', 'good': 'lightgreen', 'neutral': 'yellow', 'bad': 'red'})
+    
+    # Add percentage labels on top of each bar
+    fig.update_traces(texttemplate='%{y:.2f}%', textposition='outside', marker=dict(line=dict(color='black', width=1)))
+    
+    # Show the plot
+    st.plotly_chart(fig)
 
-# 7. Heatmap of Correlation Between Review Scores
-    st.subheader("Correlation Heatmap of Review Scores")
-    review_scores = hotel_sentiment_df[['Food Sentiment', 'Service Sentiment', 'Staff Sentiment', 'Cleanliness Sentiment', 
-                                    'Ambiance Sentiment', 'Value Sentiment', 'Room Sentiment', 'Amenities Sentiment']]
-    correlation_matrix = review_scores.apply(lambda x: pd.to_numeric(x, errors='coerce')).corr()
 
-    fig, ax = plt.subplots(figsize=(10, 6))
-    sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', ax=ax)
-    ax.set_title("Correlation Between Review Scores")
-    st.pyplot(fig)
 
 
 
