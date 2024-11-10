@@ -191,7 +191,38 @@ if page == "Hotel Sentiment Analysis":
     st.pyplot(plt)
 ### --------------------------------------
 
-
+    # 1. Sentiment Distribution for Each Hotel
+    st.subheader("Review Scores Distribution for Each Hotel")
+    
+    # Get list of unique hotels
+    hotel_list = reviews_df['hotel_name'].unique()
+    
+    # User selects a hotel
+    selected_hotel = st.selectbox("Select a Hotel", hotel_list)
+    
+    # Filter the reviews for the selected hotel
+    hotel_reviews = reviews_df[reviews_df['hotel_name'] == selected_hotel]
+    
+    # Display the first few rows of reviews for selected hotel
+    st.write(f"Displaying reviews for {selected_hotel}")
+    st.dataframe(hotel_reviews[['review_text', 'food_score', 'service_score', 'staff_score', 'cleanliness_score', 'room_score', 'value_score']])
+    
+    # 2. Plot review scores (e.g., food_score, service_score, etc.) for the selected hotel
+    # Extract the relevant score columns
+    score_columns = ['food_score', 'service_score', 'staff_score', 'cleanliness_score', 'room_score', 'value_score']
+    scores = hotel_reviews[score_columns]
+    
+    # Create a boxplot for the score distribution
+    fig, ax = plt.subplots(figsize=(10, 6))
+    sns.boxplot(data=scores, palette="coolwarm", ax=ax)
+    
+    # Add title and labels
+    ax.set_title(f"Review Scores Distribution for {selected_hotel}", fontsize=16)
+    ax.set_ylabel("Score Value")
+    plt.xticks(rotation=45)
+    
+    # Display the plot
+    st.pyplot(fig)
 
 
 
