@@ -210,33 +210,7 @@ if page == "Hotel Sentiment Analysis":
                     col2.markdown(f"<p style='color:{category_color}; font-size:18px;'>{sentiment_display}</p>", unsafe_allow_html=True)
         else:
             st.write(f"Hotel '{hotel_name_input}' not found in the summary data.")
-    # Top Positive & Negative Reviews
-    if hotel_name_input and not review_details_df.empty:
-        if 'Sentiment Score' in review_details_df.columns:
-            # Filter reviews for the given hotel
-            hotel_reviews = review_details_df[review_details_df['Hotel Name'].str.contains(hotel_name_input, case=False, na=False)]
-    
-            if not hotel_reviews.empty:
-                # Sort reviews by sentiment score (highest to lowest)
-                hotel_reviews_sorted_by_sentiment = hotel_reviews.sort_values(by='Sentiment Score', ascending=False)
-    
-                # Get the top positive review (highest sentiment score)
-                top_positive_review = hotel_reviews_sorted_by_sentiment.iloc[0]
-                st.subheader(f"Top Positive Review for {hotel_name_input}")
-                st.write(f"**Rating:** {top_positive_review['Rating']}")
-                st.write(f"**Review Title:** {top_positive_review['Review Title']}")
-                st.write(f"**Review Text:** {top_positive_review['Review Text']}")
-    
-                # Get the top negative review (lowest sentiment score)
-                top_negative_review = hotel_reviews_sorted_by_sentiment.iloc[-1]
-                st.subheader(f"Top Negative Review for {hotel_name_input}")
-                st.write(f"**Rating:** {top_negative_review['Rating']}")
-                st.write(f"**Review Title:** {top_negative_review['Review Title']}")
-                st.write(f"**Review Text:** {top_negative_review['Review Text']}")
-            else:
-                st.write(f"No reviews found for hotel '{hotel_name_input}'.")
-        else:
-            st.write("'Sentiment Score' column is missing in review details.")
+
     # Top 5 Hotels by Selected Category
     st.subheader("Top 5 Hotels by Selected Sentiment Category")
     category_options = {
