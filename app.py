@@ -189,3 +189,29 @@ if page == "Hotel Sentiment Analysis":
     plt.xlabel(f"{selected_category} Score")
     plt.ylabel("Hotel Name")
     st.pyplot(plt)
+### --------------------------------------
+    # 8. Sentiment Distribution for Each Hotel
+    st.subheader("Sentiment Distribution for Each Hotel")
+    sentiment_counts_per_hotel = hotel_sentiment_df.groupby(['hotel_name', 'Overall Sentiment']).size().unstack().fillna(0)
+    
+    fig, ax = plt.subplots(figsize=(12, 6))
+    sentiment_counts_per_hotel.plot(kind='bar', stacked=True, ax=ax, colormap='Set3')
+    ax.set_title("Sentiment Distribution for Each Hotel")
+    ax.set_xlabel("Hotel Name")
+    ax.set_ylabel("Review Count")
+    plt.xticks(rotation=90)
+    st.pyplot(fig)
+
+# 7. Heatmap of Correlation Between Review Scores
+    st.subheader("Correlation Heatmap of Review Scores")
+    review_scores = hotel_sentiment_df[['Food Sentiment', 'Service Sentiment', 'Staff Sentiment', 'Cleanliness Sentiment', 
+                                    'Ambiance Sentiment', 'Value Sentiment', 'Room Sentiment', 'Amenities Sentiment']]
+    correlation_matrix = review_scores.apply(lambda x: pd.to_numeric(x, errors='coerce')).corr()
+
+    fig, ax = plt.subplots(figsize=(10, 6))
+    sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', ax=ax)
+    ax.set_title("Correlation Between Review Scores")
+    st.pyplot(fig)
+
+
+
