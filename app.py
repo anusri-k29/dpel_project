@@ -139,8 +139,8 @@ if page == "Hotel Sentiment Analysis":
     st.write("Search and explore sentiment analysis by hotel.")
 
     # Input field for hotel name and search button
-        hotel_name_input = st.text_input("Enter hotel name:")
-        search_button = st.button("Search Hotel Sentiment")
+    hotel_name_input = st.text_input("Enter hotel name:")
+    search_button = st.button("Search Hotel Sentiment")
 
     if search_button and hotel_name_input:
         hotel_name_input_cleaned = hotel_name_input.strip().lower()
