@@ -6,18 +6,6 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-# Apply custom CSS for background color
-st.markdown(
-    """
-    <style>
-    .main {
-        background-color: #fff1e6;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
 # Sidebar for page selection
 page = st.sidebar.selectbox("Choose a Page", ["SSCA Data Analysis", "Hotel Sentiment Analysis"])
 
