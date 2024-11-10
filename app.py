@@ -195,29 +195,29 @@ import plotly.express as px
 st.subheader("Interactive Sentiment Distribution for Each Hotel")
     
     # Get list of unique hotels
-    hotel_list = hotel_sentiment_df['hotel_name'].unique()
+hotel_list = hotel_sentiment_df['hotel_name'].unique()
     
     # User selects a hotel
-    selected_hotel = st.selectbox("Select a Hotel", hotel_list)
+selected_hotel = st.selectbox("Select a Hotel", hotel_list)
     
     # Filter the data for the selected hotel
-    hotel_data = hotel_sentiment_df[hotel_sentiment_df['hotel_name'] == selected_hotel]
+hotel_data = hotel_sentiment_df[hotel_sentiment_df['hotel_name'] == selected_hotel]
     
     # Calculate sentiment distribution
-    sentiment_counts = hotel_data['Overall Sentiment'].value_counts(normalize=True) * 100  # Get percentages
+sentiment_counts = hotel_data['Overall Sentiment'].value_counts(normalize=True) * 100  # Get percentages
     
     # Create a bar chart using Plotly
-    fig = px.bar(sentiment_counts, x=sentiment_counts.index, y=sentiment_counts.values,
+fig = px.bar(sentiment_counts, x=sentiment_counts.index, y=sentiment_counts.values,
                  labels={'x': 'Sentiment', 'y': 'Percentage'},
                  title=f"Sentiment Distribution for {selected_hotel}",
                  color=sentiment_counts.index,
                  color_discrete_map={'excellent': 'darkgreen', 'good': 'lightgreen', 'neutral': 'yellow', 'bad': 'red'})
     
     # Add percentage labels on top of each bar
-    fig.update_traces(texttemplate='%{y:.2f}%', textposition='outside', marker=dict(line=dict(color='black', width=1)))
+fig.update_traces(texttemplate='%{y:.2f}%', textposition='outside', marker=dict(line=dict(color='black', width=1)))
     
     # Show the plot
-    st.plotly_chart(fig)
+st.plotly_chart(fig)    
 
 
 
