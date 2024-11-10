@@ -212,11 +212,11 @@ if page == "Hotel Sentiment Analysis":
             st.write(f"Hotel '{hotel_name_input}' not found in the summary data.")
     # Top Positive & Negative Reviews
     if hotel_name_input and not review_details_df.empty:
-    hotel_name_input_cleaned = hotel_name_input.strip().lower()
-    review_details_df['hotel_name_cleaned'] = review_details_df['hotel_name'].str.strip().str.lower()
+        hotel_name_input_cleaned = hotel_name_input.strip().lower()
+        review_details_df['hotel_name_cleaned'] = review_details_df['hotel_name'].str.strip().str.lower()
 
     # Filter the reviews for the selected hotel
-    hotel_reviews_for_selected_hotel = review_details_df[review_details_df['hotel_name_cleaned'].str.contains(hotel_name_input_cleaned)]
+        hotel_reviews_for_selected_hotel = review_details_df[review_details_df['hotel_name_cleaned'].str.contains(hotel_name_input_cleaned)]
     
     if not hotel_reviews_for_selected_hotel.empty:
         # Sort by sentiment score for the selected hotel reviews
