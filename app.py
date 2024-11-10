@@ -3,7 +3,41 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 # SSCA data analysis: 
+data = pd.read_csv('SSCA_final_data.csv')
 
+# App title and description
+st.title("SSCA Data Analysis and Hotel Sentiment Dashboard")
+st.write("An interactive dashboard providing insights and visualizations on SSCA data and hotel sentiment analysis.")
+
+# Display the SSCA data table
+st.subheader("SSCA Dataset")
+st.dataframe(data)
+
+# Age Distribution in SSCA Dataset
+st.subheader("Age Distribution")
+fig, ax = plt.subplots()
+sns.histplot(data['Age'], bins=10, kde=True, ax=ax)
+ax.set_title("Age Distribution")
+ax.set_xlabel("Age")
+ax.set_ylabel("Frequency")
+st.pyplot(fig)
+
+# Gender Distribution across Culinary Specializations
+st.subheader("Gender Distribution Across Culinary Specializations")
+fig, ax = plt.subplots()
+sns.countplot(data=data, x='CAdept', hue='Gender', ax=ax)
+ax.set_title("Gender Distribution across Culinary Specializations")
+ax.set_xlabel("Culinary Department")
+ax.set_ylabel("Count")
+plt.xticks(rotation=45)
+st.pyplot(fig)
+
+# Filter by Age Range
+st.subheader("Filter by Age Range")
+age_range = st.slider("Select Age Range", int(data['Age'].min()), int(data['Age'].max()), (18, 24))
+filtered_data = data[(data['Age'] >= age_range[0]) & (data['Age'] <= age_range[1])]
+st.write(f"Data for Age Range {age_range[0]} - {age_range[1]}")
+st.dataframe(filtered_data)
 
 # Load data function with error handling
 @st.cache_data
