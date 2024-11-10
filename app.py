@@ -133,14 +133,14 @@ ax.set_ylabel("Count")
 plt.xticks(rotation=45)
 st.pyplot(fig)
 # Hotel Sentiment Analysis Page -------------------------------------------------------
-elif page == "Hotel Sentiment Analysis":
-    hotel_sentiment_df, review_details_df = load_hotel_data()
-    st.title("Hotel Sentiment Analysis Dashboard")
-    st.write("Search and explore sentiment analysis by hotel.")
+    elif page == "Hotel Sentiment Analysis":
+        hotel_sentiment_df, review_details_df = load_hotel_data()
+        st.title("Hotel Sentiment Analysis Dashboard")
+        st.write("Search and explore sentiment analysis by hotel.")
 
     # Input field for hotel name and search button
-    hotel_name_input = st.text_input("Enter hotel name:")
-    search_button = st.button("Search Hotel Sentiment")
+        hotel_name_input = st.text_input("Enter hotel name:")
+        search_button = st.button("Search Hotel Sentiment")
 
     if search_button and hotel_name_input:
         hotel_name_input_cleaned = hotel_name_input.strip().lower()
