@@ -107,6 +107,77 @@ if page == "SSCA Data Analysis":
     ax.set_xlabel("Count")
     st.pyplot(fig)
 
+        # --- Extract and Map Hotel Chains ---
+    st.subheader("Hotel Chains Analysis")
+    
+    # Define columns with hotel names
+    hotel_columns = ['C1hotel1', 'C1hotel2', 'C2hotel1', 'C2hotel2']
+    
+    # Extract hotel names from columns, remove duplicates and NaNs
+    hotel_names = pd.concat([data[col] for col in hotel_columns], ignore_index=True)
+    hotel_names_cleaned = hotel_names.dropna().unique()
+    
+    # Function to map hotels to hotel chains
+    def map_to_hotel_chain(hotel_name):
+        hotel_name = str(hotel_name).lower()
+        if 'taj' in hotel_name:
+            return 'Taj Hotels'
+        elif 'hilton' in hotel_name:
+            return 'Hilton Hotels'
+        elif 'st regis' in hotel_name:
+            return 'St. Regis Hotels'
+        elif 'jw marriott' in hotel_name:
+            return 'JW Marriott'
+        elif 'marriott' in hotel_name:
+            return 'Marriott Hotels'
+        elif 'ritz' in hotel_name or 'ritz-carlton' in hotel_name:
+            return 'Ritz-Carlton'
+        elif 'hyatt' in hotel_name:
+            return 'Hyatt Hotels'
+        elif 'sofitel' in hotel_name:
+            return 'Sofitel Hotels'
+        elif 'shangri-la' in hotel_name:
+            return 'Shangri-La Hotels'
+        elif 'oberoi' in hotel_name:
+            return 'Oberoi Hotels'
+        elif 'leela' in hotel_name:
+            return 'Leela Palace'
+        elif 'jumeirah' in hotel_name:
+            return 'Jumeirah Hotels'
+        elif 'itc' in hotel_name:
+            return 'ITC Hotels'
+        elif 'kempinski' in hotel_name:
+            return 'Kempinski Hotels'
+        elif 'bulgari' in hotel_name:
+            return 'Bulgari Hotels'
+        elif 'mandarin' in hotel_name:
+            return 'Mandarin Oriental'
+        elif 'rosewood' in hotel_name:
+            return 'Rosewood Hotels'
+        elif 'andaz' in hotel_name:
+            return 'Andaz Hotels'
+        else:
+            return None
+    
+    # Map hotel names to chains and create DataFrame
+    hotel_chain_classes = [map_to_hotel_chain(name) for name in hotel_names_cleaned]
+    df_hotel_chains = pd.DataFrame({'Hotel Name': hotel_names_cleaned, 'Hotel Chain': hotel_chain_classes})
+    
+    # Show DataFrame of hotel names and their chains
+    st.write("Hotel Chains Mapped from SSCA Data")
+    st.dataframe(df_hotel_chains)
+    
+    # Count and plot hotel chains
+    hotel_chain_counts = df_hotel_chains['Hotel Chain'].value_counts()
+    fig, ax = plt.subplots()
+    sns.barplot(x=hotel_chain_counts.index, y=hotel_chain_counts.values, palette='viridis', ax=ax)
+    ax.set_title("Distribution of Hotels by Chain")
+    ax.set_xlabel("Hotel Chain")
+    ax.set_ylabel("Number of Hotels")
+    plt.xticks(rotation=45)
+    st.pyplot(fig)
+
+
 # ----------------------------Hotel Sentiment Analysis Page ----------------------------------------
 if page == "Hotel Sentiment Analysis":
     hotel_sentiment_df, review_details_df = load_hotel_data()
