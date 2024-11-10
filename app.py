@@ -212,22 +212,32 @@ if page == "Hotel Sentiment Analysis":
             st.write(f"Hotel '{hotel_name_input}' not found in the summary data.")
     # Top Positive & Negative Reviews
     if hotel_name_input and not review_details_df.empty:
-        hotel_reviews_sorted_by_sentiment = review_details_df.sort_values(by='Sentiment Score', ascending=False)
-        
-        if not hotel_reviews_sorted_by_sentiment.empty:
-            st.subheader(f"Top Positive Review for {hotel_name_input}")
-            top_positive_review = hotel_reviews_sorted_by_sentiment.iloc[0]
-            st.write(f"**Rating:** {top_positive_review['Rating']}")
-            st.write(f"**Review Title:** {top_positive_review['Review Title']}")
-            st.write(f"**Review Text:** {top_positive_review['Review Text']}")
+    hotel_name_input_cleaned = hotel_name_input.strip().lower()
+    review_details_df['hotel_name_cleaned'] = review_details_df['hotel_name'].str.strip().str.lower()
+
+    # Filter the reviews for the selected hotel
+    hotel_reviews_for_selected_hotel = review_details_df[review_details_df['hotel_name_cleaned'].str.contains(hotel_name_input_cleaned)]
+    
+    if not hotel_reviews_for_selected_hotel.empty:
+        # Sort by sentiment score for the selected hotel reviews
+        hotel_reviews_sorted_by_sentiment = hotel_reviews_for_selected_hotel.sort_values(by='Sentiment Score', ascending=False)
+
+        # Display top positive review
+        st.subheader(f"Top Positive Review for {hotel_name_input}")
+        top_positive_review = hotel_reviews_sorted_by_sentiment.iloc[0]
+        st.write(f"**Rating:** {top_positive_review['Rating']}")
+        st.write(f"**Review Title:** {top_positive_review['Review Title']}")
+        st.write(f"**Review Text:** {top_positive_review['Review Text']}")
             
-            st.subheader(f"Top Negative Review for {hotel_name_input}")
-            top_negative_review = hotel_reviews_sorted_by_sentiment.iloc[-1]
-            st.write(f"**Rating:** {top_negative_review['Rating']}")
-            st.write(f"**Review Title:** {top_negative_review['Review Title']}")
-            st.write(f"**Review Text:** {top_negative_review['Review Text']}")
-        else:
-            st.write(f"No reviews available for {hotel_name_input}.")
+        # Display top negative review
+        st.subheader(f"Top Negative Review for {hotel_name_input}")
+        top_negative_review = hotel_reviews_sorted_by_sentiment.iloc[-1]
+        st.write(f"**Rating:** {top_negative_review['Rating']}")
+        st.write(f"**Review Title:** {top_negative_review['Review Title']}")
+        st.write(f"**Review Text:** {top_negative_review['Review Text']}")
+    else:
+        st.write(f"No reviews available for {hotel_name_input}.")
+
 
     # Top 5 Hotels by Selected Category
     st.subheader("Top 5 Hotels by Selected Sentiment Category")
