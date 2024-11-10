@@ -227,6 +227,12 @@ if page == "Hotel Sentiment Analysis":
 
     # Display the plot
     st.pyplot(plt)
+    # Display review details if available
+    if not review_details_df.empty and 'review_text' in review_details_df.columns:
+        st.subheader("Hotel Reviews")
+        st.write("Review text and sentiment analysis:")
+        st.dataframe(review_details_df[['review_text', 'food_score', 'service_score', 'staff_score', 
+                                       'cleanliness_score', 'room_score', 'value_score']])
 
 
 
