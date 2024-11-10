@@ -190,49 +190,6 @@ if page == "Hotel Sentiment Analysis":
     plt.ylabel("Hotel Name")
     st.pyplot(plt)
 ### --------------------------------------
- # 2. Review Scores Distribution for Each Hotel
-    st.subheader("Review Scores Distribution for Each Hotel")
-
-    # Load reviews data for the analysis
-    reviews_df = load_hotel_data()[1]  # review_details_df contains the detailed reviews
-
-    # Get list of unique hotels
-    hotel_list = reviews_df['hotel_name'].unique()
-
-    # User selects a hotel
-    selected_hotel = st.selectbox("Select a Hotel", hotel_list)
-
-    # Filter the reviews for the selected hotel
-    hotel_reviews = reviews_df[reviews_df['hotel_name'] == selected_hotel]
-
-    # Display the first few rows of reviews for selected hotel (optional)
-    st.write(f"Displaying reviews for {selected_hotel}")
-    st.dataframe(hotel_reviews[['review_text', 'food_score', 'service_score', 'staff_score', 'cleanliness_score', 'room_score', 'value_score']])
-
-    # 3. Plot review scores (e.g., food_score, service_score, etc.) for the selected hotel
-    # Extract the relevant score columns
-    score_columns = ['food_score', 'service_score', 'staff_score', 'cleanliness_score', 'room_score', 'value_score']
-    scores = hotel_reviews[score_columns]
-
-    # Create a boxplot for each score category
-    plt.figure(figsize=(10, 6))
-
-    # We will plot the distribution of each score (across all reviews) for the selected hotel
-    sns.boxplot(data=scores, palette="coolwarm")
-
-    # Add title and labels
-    plt.title(f"Review Scores Distribution for {selected_hotel}", fontsize=16)
-    plt.ylabel("Score Value")
-    plt.xticks(rotation=45)
-
-    # Display the plot
-    st.pyplot(plt)
-    # Display review details if available
-    if not review_details_df.empty and 'review_text' in review_details_df.columns:
-        st.subheader("Hotel Reviews")
-        st.write("Review text and sentiment analysis:")
-        st.dataframe(review_details_df[['review_text', 'food_score', 'service_score', 'staff_score', 
-                                       'cleanliness_score', 'room_score', 'value_score']])
 
 
 
