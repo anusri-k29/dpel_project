@@ -192,7 +192,7 @@ if page == "Hotel Sentiment Analysis":
 ### --------------------------------------
 import plotly.express as px
     # 8. Interactive Sentiment Distribution for Each Hotel
-    st.subheader("Interactive Sentiment Distribution for Each Hotel")
+        st.subheader("Interactive Sentiment Distribution for Each Hotel")
     
     # Get list of unique hotels
     hotel_list = hotel_sentiment_df['hotel_name'].unique()
