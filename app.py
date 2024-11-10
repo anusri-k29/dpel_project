@@ -190,34 +190,40 @@ if page == "Hotel Sentiment Analysis":
     plt.ylabel("Hotel Name")
     st.pyplot(plt)
 ### --------------------------------------
-import plotly.express as px
-    # 8. Interactive Sentiment Distribution for Each Hotel
-st.subheader("Interactive Sentiment Distribution for Each Hotel")
-    
-    # Get list of unique hotels
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# 8. Sentiment Distribution for Each Hotel (Non-Interactive)
+st.subheader("Sentiment Distribution for Each Hotel")
+
+# Get list of unique hotels
 hotel_list = hotel_sentiment_df['hotel_name'].unique()
-    
-    # User selects a hotel
+
+# User selects a hotel
 selected_hotel = st.selectbox("Select a Hotel", hotel_list)
-    
-    # Filter the data for the selected hotel
+
+# Filter the data for the selected hotel
 hotel_data = hotel_sentiment_df[hotel_sentiment_df['hotel_name'] == selected_hotel]
-    
-    # Calculate sentiment distribution
+
+# Calculate sentiment distribution
 sentiment_counts = hotel_data['Overall Sentiment'].value_counts(normalize=True) * 100  # Get percentages
-    
-    # Create a bar chart using Plotly
-fig = px.bar(sentiment_counts, x=sentiment_counts.index, y=sentiment_counts.values,
-                 labels={'x': 'Sentiment', 'y': 'Percentage'},
-                 title=f"Sentiment Distribution for {selected_hotel}",
-                 color=sentiment_counts.index,
-                 color_discrete_map={'excellent': 'darkgreen', 'good': 'lightgreen', 'neutral': 'yellow', 'bad': 'red'})
-    
-    # Add percentage labels on top of each bar
-fig.update_traces(texttemplate='%{y:.2f}%', textposition='outside', marker=dict(line=dict(color='black', width=1)))
-    
-    # Show the plot
-st.plotly_chart(fig)    
+
+# Create a bar chart using Seaborn
+plt.figure(figsize=(8, 5))  # Adjust the size if needed
+sns.barplot(x=sentiment_counts.index, y=sentiment_counts.values, palette=["darkgreen", "lightgreen", "yellow", "red"])
+
+# Add title and labels
+plt.title(f"Sentiment Distribution for {selected_hotel}")
+plt.xlabel("Sentiment")
+plt.ylabel("Percentage")
+plt.ylim(0, 100)  # Ensure the y-axis goes from 0 to 100%
+
+# Add percentage labels on top of each bar
+for i, v in enumerate(sentiment_counts.values):
+    plt.text(i, v + 2, f"{v:.2f}%", ha='center', va='bottom', fontsize=12)
+
+# Display the plot
+st.pyplot(plt)
 
 
 
