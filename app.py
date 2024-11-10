@@ -193,37 +193,40 @@ if page == "Hotel Sentiment Analysis":
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-# 8. Sentiment Distribution for Each Hotel (Non-Interactive)
-st.subheader("Sentiment Distribution for Each Hotel")
+st.subheader("Review Scores Distribution for Each Hotel")
 
 # Get list of unique hotels
-hotel_list = hotel_sentiment_df['hotel_name'].unique()
+hotel_list = reviews_df['hotel_name'].unique()
 
 # User selects a hotel
 selected_hotel = st.selectbox("Select a Hotel", hotel_list)
 
-# Filter the data for the selected hotel
-hotel_data = hotel_sentiment_df[hotel_sentiment_df['hotel_name'] == selected_hotel]
+# Filter the reviews for the selected hotel
+hotel_reviews = reviews_df[reviews_df['hotel_name'] == selected_hotel]
 
-# Calculate sentiment distribution
-sentiment_counts = hotel_data['Overall Sentiment'].value_counts(normalize=True) * 100  # Get percentages
+# Display the first few rows of reviews for selected hotel (optional)
+st.write(f"Displaying reviews for {selected_hotel}")
+st.dataframe(hotel_reviews[['review_text', 'food_score', 'service_score', 'staff_score', 'cleanliness_score', 'room_score', 'value_score']])
 
-# Create a bar chart using Seaborn
-plt.figure(figsize=(8, 5))  # Adjust the size if needed
-sns.barplot(x=sentiment_counts.index, y=sentiment_counts.values, palette=["darkgreen", "lightgreen", "yellow", "red"])
+# 2. Plot review scores (e.g., food_score, service_score, etc.) for the selected hotel
+# Extract the relevant score columns
+score_columns = ['food_score', 'service_score', 'staff_score', 'cleanliness_score', 'room_score', 'value_score']
+scores = hotel_reviews[score_columns]
+
+# Create a heatmap-like bar chart (one bar for each score category)
+plt.figure(figsize=(10, 6))
+
+# We will plot the distribution of each score (across all reviews) for the selected hotel
+sns.boxplot(data=scores, palette="coolwarm")
 
 # Add title and labels
-plt.title(f"Sentiment Distribution for {selected_hotel}")
-plt.xlabel("Sentiment")
-plt.ylabel("Percentage")
-plt.ylim(0, 100)  # Ensure the y-axis goes from 0 to 100%
-
-# Add percentage labels on top of each bar
-for i, v in enumerate(sentiment_counts.values):
-    plt.text(i, v + 2, f"{v:.2f}%", ha='center', va='bottom', fontsize=12)
+plt.title(f"Review Scores Distribution for {selected_hotel}", fontsize=16)
+plt.ylabel("Score Value")
+plt.xticks(rotation=45)
 
 # Display the plot
 st.pyplot(plt)
+
 
 
 
