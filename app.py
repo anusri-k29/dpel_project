@@ -1,4 +1,4 @@
-import streamlit as st
+1)	import streamlit as st
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -211,8 +211,8 @@ if page == "Hotel Sentiment Analysis":
         else:
             st.write(f"Hotel '{hotel_name_input}' not found in the summary data.")
     # Top Positive & Negative Reviews
-    if hotel_name_input and not hotel_reviews.empty:
-        hotel_reviews_sorted_by_sentiment = hotel_reviews.sort_values(by='Sentiment Score', ascending=False)
+    if hotel_name_input and not review_details_df.empty:
+        hotel_reviews_sorted_by_sentiment = review_details_df.sort_values(by='Sentiment Score', ascending=False)
         
         if not hotel_reviews_sorted_by_sentiment.empty:
             st.subheader(f"Top Positive Review for {hotel_name_input}")
