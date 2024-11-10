@@ -158,16 +158,9 @@ if page == "SSCA Data Analysis":
             return 'Andaz Hotels'
         else:
             return None
-    
-    # Map hotel names to chains and create DataFrame
     hotel_chain_classes = [map_to_hotel_chain(name) for name in hotel_names_cleaned]
     df_hotel_chains = pd.DataFrame({'Hotel Name': hotel_names_cleaned, 'Hotel Chain': hotel_chain_classes})
-    
-    # Show DataFrame of hotel names and their chains
     st.write("Hotel Chains Mapped from SSCA Data")
-    st.dataframe(df_hotel_chains)
-    
-    # Count and plot hotel chains
     hotel_chain_counts = df_hotel_chains['Hotel Chain'].value_counts()
     fig, ax = plt.subplots()
     sns.barplot(x=hotel_chain_counts.index, y=hotel_chain_counts.values, palette='viridis', ax=ax)
@@ -176,8 +169,6 @@ if page == "SSCA Data Analysis":
     ax.set_ylabel("Number of Hotels")
     plt.xticks(rotation=45)
     st.pyplot(fig)
-
-
 # ----------------------------Hotel Sentiment Analysis Page ----------------------------------------
 if page == "Hotel Sentiment Analysis":
     hotel_sentiment_df, review_details_df = load_hotel_data()
