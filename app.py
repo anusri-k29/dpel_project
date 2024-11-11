@@ -251,3 +251,62 @@ if page == "Hotel Sentiment Analysis":
         st.pyplot(fig)
     else:
         st.write("The 'Trip Type' column is missing from the dataset.")
+
+
+
+
+    import streamlit as st
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Load data
+@st.cache_data
+def load_individual_reviews():
+    return pd.read_csv('indi_reviews.csv')
+
+# Convert 'stay_date' column to datetime format for seasonal analysis
+review_details_df['stay_date'] = pd.to_datetime(review_details_df['stay_date'])
+
+# Extract the month from 'stay_date' for seasonal patterns
+review_details_df['month'] = review_details_df['stay_date'].dt.month
+review_details_df['year'] = review_details_df['stay_date'].dt.year
+
+# Map month numbers to month names
+month_names = {1: 'January', 2: 'February', 3: 'March', 4: 'April', 5: 'May', 6: 'June', 7: 'July', 
+               8: 'August', 9: 'September', 10: 'October', 11: 'November', 12: 'December'}
+review_details_df['month_name'] = review_details_df['month'].map(month_names)
+
+# Sidebar option to choose seasonality type (monthly or yearly)
+seasonality_type = st.sidebar.radio("Choose Seasonality Type", ("Monthly", "Yearly"))
+
+# Plot monthly or yearly seasonality
+st.title("Seasonal Analysis of Hotel Stays")
+
+if seasonality_type == "Monthly":
+    # Monthly Analysis
+    st.subheader("Monthly Seasonality of Hotel Stays")
+    monthly_counts = review_details_df['month_name'].value_counts().reindex(list(month_names.values()))
+
+    # Plotting
+    fig, ax = plt.subplots()
+    sns.barplot(x=monthly_counts.index, y=monthly_counts.values, palette="coolwarm", ax=ax)
+    ax.set_title("Monthly Distribution of Hotel Stays")
+    ax.set_xlabel("Month")
+    ax.set_ylabel("Number of Stays")
+    plt.xticks(rotation=45)
+    st.pyplot(fig)
+
+else:
+    # Yearly Analysis
+    st.subheader("Yearly Seasonality of Hotel Stays")
+    yearly_counts = review_details_df['year'].value_counts().sort_index()
+
+    # Plotting
+    fig, ax = plt.subplots()
+    sns.lineplot(x=yearly_counts.index, y=yearly_counts.values, marker="o", ax=ax)
+    ax.set_title("Yearly Distribution of Hotel Stays")
+    ax.set_xlabel("Year")
+    ax.set_ylabel("Number of Stays")
+    st.pyplot(fig)
+
