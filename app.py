@@ -102,12 +102,10 @@ if page == "SSCA Data Analysis":
     selected_country = st.selectbox("Select Country:", data['Country1'].unique())
     country_hotels = data[data['Country1'] == selected_country][['C1hotel1', 'C1hotel2']].melt(value_name='Hotels').dropna()
     hotel_counts = country_hotels['Hotels'].value_counts().head(10)
-    fig, ax = plt.subplots()
-    sns.barplot(x=hotel_counts.values, y=hotel_counts.index, palette="cubehelix", ax=ax)
+    fig, ax = plt.subplots(figsize=(7, 7))
+    ax.pie(hotel_counts.values, labels=hotel_counts.index, autopct='%1.1f%%', startangle=140, colors=sns.color_palette("cubehelix", len(hotel_counts)))
     ax.set_title(f"Top Hotels in {selected_country}")
-    ax.set_xlabel("Count")
     st.pyplot(fig)
-
         # --- Extract and Map Hotel Chains ---
     st.subheader("Hotel Chains Analysis")
     
