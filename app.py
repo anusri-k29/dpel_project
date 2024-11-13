@@ -216,7 +216,7 @@ if page == "SSCA Data Analysis":
     st.pyplot(stay_pie_fig)
 
     # Preferred Countries for Hotels in CAdept
-    st.subheader("Preferred Countries for Hotels by Department")
+    st.subheader("Preferred Countries for working in specific Culinary Department")
     
     # Dropdown menu to select department
     departments = data['CAdept'].unique()  # Get unique departments from the data
@@ -232,7 +232,7 @@ if page == "SSCA Data Analysis":
     dept_pie_ax.pie(country_counts_dept, labels=country_counts_dept.index, autopct='%1.1f%%',
                      startangle=90, colors=sns.color_palette("rainbow", len(country_counts_dept)),
                      textprops={'fontsize': 5})
-    dept_pie_ax.set_title(f"Preferred Countries for Hotels in {selected_dept} Department")
+    dept_pie_ax.set_title(f"Preferred Countries for working in {selected_dept} Department")
     dept_pie_ax.axis('equal')
     st.pyplot(dept_pie_fig)
 
@@ -249,7 +249,7 @@ if page == "SSCA Data Analysis":
     hdept_pie_ax.pie(country_counts_hdept, labels=country_counts_hdept.index, autopct='%1.1f%%',
                       startangle=90, colors=sns.color_palette("Set3", len(country_counts_hdept)),
                       textprops={'fontsize': 6})  # Adjust font size for labels
-    hdept_pie_ax.set_title(f"Preferred Countries for Hotels in {selected_hdept} Department", fontsize=14)  # Title font size
+    hdept_pie_ax.set_title(f"Preferred Countries for working in {selected_hdept} Department", fontsize=14)  # Title font size
     hdept_pie_ax.axis('equal')
     st.pyplot(hdept_pie_fig)
 
