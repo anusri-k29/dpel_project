@@ -216,17 +216,24 @@ if page == "SSCA Data Analysis":
     st.pyplot(stay_pie_fig)
 
     # Preferred Countries for Hotels in Pâtisserie Department
-    ca_department = "Pâtisserie"
-    ca_dept_data = data[data['CAdept'] == ca_department]
-    country_choices_ca_dept = pd.concat([ca_dept_data['Country1'], ca_dept_data['Country2']])
-    country_counts_ca_dept = country_choices_ca_dept.value_counts()
+     st.subheader("Preferred Countries for Hotels by Department")
+    
+    # Dropdown menu to select department
+    departments = data['CAdept'].unique()  # Get unique departments from the data
+    selected_dept = st.selectbox("Select Department", departments)
+    
+    # Filter data based on selected department
+    dept_data = data[data['CAdept'] == selected_dept]
+    country_choices_dept = pd.concat([dept_data['Country1'], dept_data['Country2']])
+    country_counts_dept = country_choices_dept.value_counts()
 
-    ca_dept_pie_fig, ca_dept_pie_ax = plt.subplots(figsize=(5, 5))
-    ca_dept_pie_ax.pie(country_counts_ca_dept, labels=country_counts_ca_dept.index, autopct='%1.1f%%',
-                        startangle=90, colors=sns.color_palette("rainbow", len(country_counts_ca_dept)))
-    ca_dept_pie_ax.set_title(f"Preferred Countries for Hotels in {ca_department} Department")
-    ca_dept_pie_ax.axis('equal')
-    st.pyplot(ca_dept_pie_fig)
+    # Create a pie chart for the selected department
+    dept_pie_fig, dept_pie_ax = plt.subplots(figsize=(5, 5))
+    dept_pie_ax.pie(country_counts_dept, labels=country_counts_dept.index, autopct='%1.1f%%',
+                     startangle=90, colors=sns.color_palette("rainbow", len(country_counts_dept)))
+    dept_pie_ax.set_title(f"Preferred Countries for Hotels in {selected_dept} Department")
+    dept_pie_ax.axis('equal')
+    st.pyplot(dept_pie_fig)
 
     # Future Career Aspirations by Country
     st.subheader("Future Career Aspirations by Country")
