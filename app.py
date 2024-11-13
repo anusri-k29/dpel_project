@@ -216,7 +216,7 @@ if page == "SSCA Data Analysis":
     st.pyplot(stay_pie_fig)
 
     # Preferred Countries for Hotels in CAdept
-    st.subheader("Preferred Countries for working in specific Culinary Department")
+    st.subheader("Preferred Countries for working in specific Departments of CA and Hospitality")
     
     # Dropdown menu to select department
     departments = data['CAdept'].unique()  # Get unique departments from the data
