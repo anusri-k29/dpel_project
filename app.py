@@ -230,7 +230,8 @@ if page == "SSCA Data Analysis":
     # Create a pie chart for the selected department
     dept_pie_fig, dept_pie_ax = plt.subplots(figsize=(5, 5))
     dept_pie_ax.pie(country_counts_dept, labels=country_counts_dept.index, autopct='%1.1f%%',
-                     startangle=90, colors=sns.color_palette("rainbow", len(country_counts_dept)))
+                     startangle=90, colors=sns.color_palette("rainbow", len(country_counts_dept)),
+                     textprops={'fontsize': 10})
     dept_pie_ax.set_title(f"Preferred Countries for Hotels in {selected_dept} Department")
     dept_pie_ax.axis('equal')
     st.pyplot(dept_pie_fig)
