@@ -8,26 +8,37 @@ page = st.sidebar.selectbox("Choose a Page", ["SSCA Data Analysis", "Hotel Senti
 
 # Loading the data
 @st.cache_data
-def load_ssca_data():
-    return pd.read_csv('SSCA_final_data.csv')
+# Loading the data with file upload functionality
+def load_ssca_data(uploaded_file):
+    if uploaded_file is not None:
+        return pd.read_csv(uploaded_file)
+    else:
+        st.error("Please upload the SSCA data CSV file.")
+        return pd.DataFrame()
 
-@st.cache_data
-def load_hotel_data():
-    try:
-        all_reviews_df = pd.read_csv('all_reviews.csv')
-        hotel_sentiment_df = pd.read_csv('summary_review_1.csv')
-        review_details_df = pd.read_csv('indi_reviews.csv')
-    except FileNotFoundError:
-        st.error("One or more required files are missing.")
-        return pd.DataFrame(), pd.DataFrame()
-    return hotel_sentiment_df, review_details_df, all_reviews_df
+def load_hotel_data(uploaded_file1, uploaded_file2, uploaded_file3):
+    if uploaded_file1 is not None and uploaded_file2 is not None and uploaded_file3 is not None:
+        all_reviews_df = pd.read_csv(uploaded_file1)
+        hotel_sentiment_df = pd.read_csv(uploaded_file2)
+        review_details_df = pd.read_csv(uploaded_file3)
+        return hotel_sentiment_df, review_details_df, all_reviews_df
+    else:
+        st.error("Please upload the required hotel data CSV files.")
+        return pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
 
 # ----------------SSCA Data Analysis Page----------------------------
 if page == "SSCA Data Analysis":
-    data = load_ssca_data()
     st.title("SSCA Data Analysis Dashboard")
     st.write("An interactive dashboard providing insights and visualizations on SSCA data.")
-
+    # File uploader for SSCA data
+    uploaded_ssca_file = st.file_uploader("Upload SSCA Data CSV", type=["csv"])
+    
+    if uploaded_ssca_file is not None:
+        data = load_ssca_data(uploaded_ssca_file)
+        st.subheader("SSCA Dataset")
+        st.dataframe(data)
+    else:
+        st.warning("Please upload the SSCA data CSV.")
     # Display SSCA data table
     st.subheader("SSCA Dataset")
     st.dataframe(data)
@@ -266,9 +277,20 @@ if page == "SSCA Data Analysis":
 
 # ----------------------------Hotel Sentiment Analysis Page ----------------------------------------
 if page == "Hotel Sentiment Analysis":
-    hotel_sentiment_df, review_details_df, all_reviews_df = load_hotel_data()
     st.title("Hotel Sentiment Analysis Dashboard")
     st.write("Search and explore sentiment analysis by hotel.")
+    
+    # File uploader for hotel-related data
+    uploaded_all_reviews_file = st.file_uploader("Upload All Reviews CSV", type=["csv"], key="file1")
+    uploaded_hotel_sentiment_file = st.file_uploader("Upload Hotel Sentiment Summary CSV", type=["csv"], key="file2")
+    uploaded_review_details_file = st.file_uploader("Upload Individual Reviews CSV", type=["csv"], key="file3")
+
+    if uploaded_all_reviews_file and uploaded_hotel_sentiment_file and uploaded_review_details_file:
+        hotel_sentiment_df, review_details_df, all_reviews_df = load_hotel_data(
+            uploaded_all_reviews_file, uploaded_hotel_sentiment_file, uploaded_review_details_file)
+        
+    else:
+        st.warning("Please upload all three required hotel data CSV files.")
     # Input field for hotel name and search button
     hotel_name_input = st.text_input("Enter hotel name:")
     search_button = st.button("Search Hotel Sentiment")
