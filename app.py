@@ -169,82 +169,75 @@ if page == "SSCA Data Analysis":
     plt.xticks(rotation=45)
     st.pyplot(fig)
 #----------------------------------new-------------------------------
-if page == "SSCA Data Analysis":
-    st.title("SSCA Data Analysis Dashboard")
-    st.write("An interactive dashboard providing insights and visualizations on SSCA data.")
-
     # Stay Decisions by Hospitality Department
     st.subheader('Stay Decisions by Hospitality Department')
-    hdept = st.selectbox("Select Hospitality Department:", data1['Hdept'].unique())
-    stay_status = st.radio("Select Stay Decision:", ['Yes', 'No'])
-
-    filtered_data = data1[(data1['Hdept'] == hdept) & (data1['stay'] == stay_status)]
-    fig, ax = plt.subplots(figsize=(10, 6))
-    sns.countplot(data=filtered_data, x='Hdept', hue='stay', palette='muted', ax=ax)
-    ax.set_title('Stay Decisions by Hospitality Department')
-    ax.set_xlabel('Hospitality Department')
-    ax.set_ylabel('Count')
+    stay_dept_fig, stay_dept_ax = plt.subplots(figsize=(10, 6))
+    sns.countplot(data=data, x='Hdept', hue='stay', palette='muted', ax=stay_dept_ax)
+    stay_dept_ax.set_title('Stay Decisions by Hospitality Department')
+    stay_dept_ax.set_xlabel('Hospitality Department')
+    stay_dept_ax.set_ylabel('Count')
     plt.xticks(rotation=45)
-    st.pyplot(fig)
+    st.pyplot(stay_dept_fig)
 
-    # Preferred Countries for Hotels (Pie Chart)
+    # Preferred Countries for Hotels
     st.subheader("Preferred Countries for Hotels")
-    country_choices = pd.concat([data1['Country1'], data1['Country2']])
+    country_choices = pd.concat([data['Country1'], data['Country2']])
     country_counts = country_choices.value_counts()
-    fig, ax = plt.subplots(figsize=(8, 10))
-    ax.pie(country_counts, labels=country_counts.index, startangle=90, colors=sns.color_palette("Set3", len(country_counts)))
-    ax.set_title("Preferred Countries for Hotels")
-    ax.axis('equal')
-    st.pyplot(fig)
 
-    # Hospitality Department Choices by Culinary Department (Heatmap)
+    country_pie_fig, country_pie_ax = plt.subplots(figsize=(8, 10))
+    country_pie_ax.pie(country_counts, labels=country_counts.index, startangle=90, 
+                       colors=sns.color_palette("Set3", len(country_counts)))
+    country_pie_ax.set_title("Preferred Countries for Hotels")
+    country_pie_ax.axis('equal')  # Equal aspect ratio ensures pie is drawn as a circle.
+    st.pyplot(country_pie_fig)
+
+    # Hospitality Department Choices by Culinary Department
     st.subheader("Hospitality Department Choices by Culinary Department")
-    dept_combinations = data1.groupby(['CAdept', 'Hdept']).size().unstack().fillna(0)
-    fig, ax = plt.subplots(figsize=(12, 6))
-    sns.heatmap(dept_combinations, annot=True, cmap="Blues", fmt="g", ax=ax)
-    ax.set_title("Hospitality Department Choices by Culinary Department")
-    ax.set_xlabel("Hospitality Department")
-    ax.set_ylabel("Culinary Department")
-    st.pyplot(fig)
+    dept_combinations = data.groupby(['CAdept', 'Hdept']).size().unstack().fillna(0)
 
-    # Top Countries Where Students Prefer to Stay (Pie Chart)
-    st.subheader("Top Countries Where Students Prefer to Stay")
-    stay_choice = st.radio("Select Stay Preference:", ["Yes", "No"])
-    stay_data = data1[data1['stay'] == stay_choice]
+    dept_heatmap_fig, dept_heatmap_ax = plt.subplots(figsize=(12, 6))
+    sns.heatmap(dept_combinations, annot=True, cmap="Blues", fmt="g", ax=dept_heatmap_ax)
+    dept_heatmap_ax.set_title("Hospitality Department Choices by Culinary Department")
+    dept_heatmap_ax.set_xlabel("Hospitality Department")
+    dept_heatmap_ax.set_ylabel("Culinary Department")
+    st.pyplot(dept_heatmap_fig)
+
+    # Top Countries Where Students Prefer to Stay
+    stay_choice = "Yes"
+    stay_data = data[data['stay'] == stay_choice]
     country_choices_stay = pd.concat([stay_data['Country1'], stay_data['Country2']])
     country_counts_stay = country_choices_stay.value_counts()
-    fig, ax = plt.subplots(figsize=(6, 6))
-    ax.pie(country_counts_stay, labels=country_counts_stay.index, autopct='%1.1f%%', startangle=90,
-           colors=sns.color_palette("Set3", len(country_counts_stay)))
-    ax.set_title("Top Countries Where Students Prefer to Stay")
-    ax.axis('equal')
-    st.pyplot(fig)
 
-    # Preferred Countries for Hotels in Specific Culinary Department (Pie Chart)
-    st.subheader("Preferred Countries for Hotels in Specific Culinary Department")
-    ca_department = st.selectbox("Select Culinary Department:", data1['CAdept'].unique())
-    ca_dept_data = data1[data1['CAdept'] == ca_department]
+    stay_pie_fig, stay_pie_ax = plt.subplots(figsize=(6, 6))
+    stay_pie_ax.pie(country_counts_stay, labels=country_counts_stay.index, autopct='%1.1f%%',
+                     startangle=90, colors=sns.color_palette("Set3", len(country_counts_stay)))
+    stay_pie_ax.set_title("Top Countries Where Students Prefer to Stay")
+    stay_pie_ax.axis('equal')
+    st.pyplot(stay_pie_fig)
+
+    # Preferred Countries for Hotels in Pâtisserie Department
+    ca_department = "Pâtisserie"
+    ca_dept_data = data[data['CAdept'] == ca_department]
     country_choices_ca_dept = pd.concat([ca_dept_data['Country1'], ca_dept_data['Country2']])
     country_counts_ca_dept = country_choices_ca_dept.value_counts()
-    fig, ax = plt.subplots(figsize=(5, 5))
-    ax.pie(country_counts_ca_dept, labels=country_counts_ca_dept.index, autopct='%1.1f%%', startangle=90,
-           colors=sns.color_palette("rainbow", len(country_counts_ca_dept)))
-    ax.set_title(f"Preferred Countries for Hotels in {ca_department} Department")
-    ax.axis('equal')
-    st.pyplot(fig)
 
-    # Future Career Aspirations by Country (FacetGrid)
-    st.subheader('Future Career Aspirations by Country')
-    future_career = st.selectbox("Select Future Career:", data1['future_career'].unique())
-    g = sns.FacetGrid(data1[data1['future_career'] == future_career], col='future_career', col_wrap=3, height=5,
-                      sharey=False)
+    ca_dept_pie_fig, ca_dept_pie_ax = plt.subplots(figsize=(5, 5))
+    ca_dept_pie_ax.pie(country_counts_ca_dept, labels=country_counts_ca_dept.index, autopct='%1.1f%%',
+                        startangle=90, colors=sns.color_palette("rainbow", len(country_counts_ca_dept)))
+    ca_dept_pie_ax.set_title(f"Preferred Countries for Hotels in {ca_department} Department")
+    ca_dept_pie_ax.axis('equal')
+    st.pyplot(ca_dept_pie_fig)
+
+    # Future Career Aspirations by Country
+    st.subheader("Future Career Aspirations by Country")
+    g = sns.FacetGrid(data, col='future_career', col_wrap=3, height=5, sharey=False)
     g.map(sns.countplot, 'Country1', palette='Set2')
     g.set_axis_labels('Country', 'Number of Students')
     g.set_titles("{col_name}")
     g.set_xticklabels(rotation=45)
     plt.subplots_adjust(top=0.9, hspace=0.2)
     g.fig.suptitle('Future Career Aspirations by Country', fontsize=12)
-    st.pyplot(g)
+    st.pyplot(g.fig)
 
 # ----------------------------Hotel Sentiment Analysis Page ----------------------------------------
 if page == "Hotel Sentiment Analysis":
