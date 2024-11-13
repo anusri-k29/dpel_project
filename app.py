@@ -210,5 +210,5 @@ elif page == "Hotel Sentiment Analysis":
         st.write(all_reviews_df)
         
         st.subheader('Top 10 Hotels by Sentiment Score')
-        sentiment_scores = hotel_sentiment_df[['Hotel', 'Sentiment Score']].sort_values(by='Sentiment Score', ascending=False).head(10)
+        sentiment_scores = hotel_sentiment_df[['Hotel_Name', 'Sentiment Score']].sort_values(by='Sentiment Score', ascending=False).head(10)
         st.write(sentiment_scores)
