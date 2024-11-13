@@ -248,7 +248,7 @@ if page == "SSCA Data Analysis":
     hdept_pie_fig, hdept_pie_ax = plt.subplots(figsize=(5, 5))
     hdept_pie_ax.pie(country_counts_hdept, labels=country_counts_hdept.index, autopct='%1.1f%%',
                       startangle=90, colors=sns.color_palette("Set3", len(country_counts_hdept)),
-                      textprops={'fontsize': 10})  # Adjust font size for labels
+                      textprops={'fontsize': 6})  # Adjust font size for labels
     hdept_pie_ax.set_title(f"Preferred Countries for Hotels in {selected_hdept} Department", fontsize=14)  # Title font size
     hdept_pie_ax.axis('equal')
     st.pyplot(hdept_pie_fig)
