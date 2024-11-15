@@ -251,12 +251,12 @@ if page == "SSCA Data Analysis":
         g.fig.suptitle('Future Career Aspirations by Country', fontsize=12)
         st.pyplot(g.fig)
     
-            # Filter by Age Range
-            st.subheader("Filter by Age Range")
-            age_range = st.slider("Select Age Range", int(data['Age'].min()), int(data['Age'].max()), (18, 24))
-            filtered_data = data[(data['Age'] >= age_range[0]) & (data['Age'] <= age_range[1])]
-            st.write(f"Data for Age Range {age_range[0]} - {age_range[1]}")
-            st.dataframe(filtered_data)
+        # Filter by Age Range
+        st.subheader("Filter by Age Range")
+        age_range = st.slider("Select Age Range", int(data['Age'].min()), int(data['Age'].max()), (18, 24))
+        filtered_data = data[(data['Age'] >= age_range[0]) & (data['Age'] <= age_range[1])]
+        st.write(f"Data for Age Range {age_range[0]} - {age_range[1]}")
+        st.dataframe(filtered_data)
         else:
             st.warning("Please upload the SSCA data file to proceed.")
 
