@@ -258,7 +258,7 @@ if page == "SSCA Data Analysis":
         st.write(f"Data for Age Range {age_range[0]} - {age_range[1]}")
         st.dataframe(filtered_data)
         else:
-            st.warning("Please upload the SSCA data file to proceed.")
+        st.warning("Please upload the SSCA data file to proceed.")
 
 # ----------------Hotel Sentiment Analysis Page-----------------------
 if page == "Hotel Sentiment Analysis":
@@ -335,5 +335,5 @@ if page == "Hotel Sentiment Analysis":
         plt.grid(axis='x', linestyle='--', alpha=0.7)
 
         st.pyplot(plt)
-    else:
-        st.warning("Please upload all required files to proceed.")
+else:
+    st.warning("Please upload all required files to proceed.")
