@@ -335,5 +335,20 @@ if page == "Hotel Sentiment Analysis":
         plt.grid(axis='x', linestyle='--', alpha=0.7)
 
         st.pyplot(plt)
+              # --- Trip Type Analysis ---
+        st.subheader("Trip Type Distribution")
+        if 'Trip Type' in all_reviews_df.columns:
+            
+            trip_type_counts = all_reviews_df['Trip Type'].value_counts()
+            fig, ax = plt.subplots()
+            sns.barplot(x=trip_type_counts.index, y=trip_type_counts.values, palette="Set2", ax=ax)
+            ax.set_title("Distribution of Trip Types")
+            ax.set_xlabel("Trip Type")
+            ax.set_ylabel("Count")
+            plt.xticks(rotation=45)
+            st.pyplot(fig)
+        else:
+            st.write("The 'Trip Type' column is missing from the dataset.")
+
 else:
     st.warning("Please upload all required files to proceed.")
