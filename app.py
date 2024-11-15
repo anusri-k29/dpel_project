@@ -257,7 +257,7 @@ if page == "SSCA Data Analysis":
         filtered_data = data[(data['Age'] >= age_range[0]) & (data['Age'] <= age_range[1])]
         st.write(f"Data for Age Range {age_range[0]} - {age_range[1]}")
         st.dataframe(filtered_data)
-        else:
+    else:
         st.warning("Please upload the SSCA data file to proceed.")
 
 # ----------------Hotel Sentiment Analysis Page-----------------------
